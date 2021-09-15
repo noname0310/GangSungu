@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{215139A9-BD45-405E-BB22-B5D31E8A6D73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lexer", "Lexer\Lexer.csproj", "{86D54796-6304-4FE3-A71B-5AD8D7943CF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{215139A9-BD45-405E-BB22-B5D31E8A6D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{215139A9-BD45-405E-BB22-B5D31E8A6D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{215139A9-BD45-405E-BB22-B5D31E8A6D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{215139A9-BD45-405E-BB22-B5D31E8A6D73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86D54796-6304-4FE3-A71B-5AD8D7943CF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86D54796-6304-4FE3-A71B-5AD8D7943CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86D54796-6304-4FE3-A71B-5AD8D7943CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86D54796-6304-4FE3-A71B-5AD8D7943CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24730833-87E9-4118-83E3-C98321E1C5A7}
+	EndGlobalSection
+EndGlobal
