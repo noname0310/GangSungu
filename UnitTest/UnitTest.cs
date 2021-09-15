@@ -1,6 +1,7 @@
 using Lexer.Low;
 using Lexer.Low.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text;
 
 namespace UnitTest;
 
@@ -10,7 +11,7 @@ public class UnitTest
     [TestMethod]
     public void CursorTest()
     {
-        var cursor = new Cursor("abcde".ToCharArray());
+        var cursor = new Cursor(Encoding.UTF32.GetBytes("abcde"));
         Assert.AreEqual('a', cursor.First());
         Assert.AreEqual('b', cursor.Second());
         Assert.AreEqual('c', cursor.Lookup(2));
@@ -37,7 +38,7 @@ public class UnitTest
     [TestMethod]
     public void LexTest()
     {
-        using var lexer = new Lexer.Low.Lexer("a + b = (c * d) 10000".ToCharArray());
+        using var lexer = new LexEnumerator("a + b = (c * d) 10000");
         lexer.MoveNext();
         Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();

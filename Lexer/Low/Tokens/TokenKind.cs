@@ -1,4 +1,6 @@
-﻿namespace Lexer.Low.Tokens;
+﻿using System;
+
+namespace Lexer.Low.Tokens;
 
 public readonly struct TokenKind
 {

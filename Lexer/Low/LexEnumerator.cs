@@ -1,18 +1,23 @@
 ﻿using Lexer.Low.Tokens;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Lexer.Low;
 
-public struct Lexer : IEnumerator<Token>
+using Char32 = UInt32;
+
+public struct LexEnumerator : IEnumerator<Token>
 {
     public Token Current { get; private set; }
     object IEnumerator.Current => Current;
-    private ReadOnlyMemory<char> _inputReadOnlyMemory;
-    private readonly ReadOnlyMemory<char> _initReadOnlyMemory;
-    public Lexer(ReadOnlyMemory<char> input)
+    private ReadOnlyMemory<byte> _inputReadOnlyMemory;
+    private readonly byte[] _initInput;
+    public LexEnumerator(string input)
     {
-        _inputReadOnlyMemory = input;
-        _initReadOnlyMemory = input;
+        _initInput = Encoding.UTF32.GetBytes(input);
+        _inputReadOnlyMemory = new(_initInput);
         Current = default;
     }
     public void Dispose() { }
@@ -22,19 +27,19 @@ public struct Lexer : IEnumerator<Token>
             return false;
 
         Current = Next(_inputReadOnlyMemory.Span);
-        _inputReadOnlyMemory = _inputReadOnlyMemory[Current.Length..];
+        _inputReadOnlyMemory = _inputReadOnlyMemory[(Current.Length << 2)..];
         return true;
     }
-    public void Reset() => _inputReadOnlyMemory = _initReadOnlyMemory;
-    private static Token Next(ReadOnlySpan<char> input)
+    public void Reset() => _inputReadOnlyMemory = new(_initInput);
+    private static Token Next(ReadOnlySpan<byte> input)
     {
         var cursor = new Cursor(input);
-        char consumed = cursor.Consume()!.Value;
+        var consumed = cursor.Consume()!.Value;
         TokenKind tokenKind;
 
-        if (char.IsWhiteSpace(consumed))
+        if (char.IsWhiteSpace((char)consumed))
         {
-            ConsumeWhile(ref cursor, char.IsWhiteSpace);
+            ConsumeWhile(ref cursor, x => char.IsWhiteSpace((char)x));
             tokenKind = TokenKind.Whitespace();
         }
         else if (IsIdStart(consumed))
@@ -99,30 +104,30 @@ public struct Lexer : IEnumerator<Token>
         return new Token(tokenKind, cursor.LenConsumed);
     }
 
-    private static void ConsumeWhile(ref Cursor cursor, Func<char, bool> pred)
+    private static void ConsumeWhile(ref Cursor cursor, Func<Char32, bool> pred)
     {
         while (pred(cursor.First()))
             cursor.Consume();
     }
 
-    private static bool IsIdStart(char c) =>
+    private static bool IsIdStart(Char32 c) =>
         ('a' <= c && c <= 'z')
         || ('A' <= c && c <= 'Z')
-        || (c == '_');
-    //|| (c > '\x7f' && UnicodeXid.IsXidStart(c));
+        || (c == '_')
+        || (c > '\x7f' && UnicodeXid.IsXidStart(c));
 
-    private static bool IsIdContinue(char c) =>
+    private static bool IsIdContinue(Char32 c) =>
         ('a' <= c && c <= 'z')
         || ('A' <= c && c <= 'Z')
         || ('0' <= c && c <= '9')
-        || (c == '_');
-    //|| (c > '\x7f' && UnicodeXid.IsXidContinue(c));
+        || (c == '_')
+        || (c > '\x7f' && UnicodeXid.IsXidContinue(c));
 
-    private static TokenNumberLiteralKind ConsumeNumber(ref Cursor cursor, char firstChar)
+    private static TokenNumberLiteralKind ConsumeNumber(ref Cursor cursor, Char32 firstChar)
     {
         TokenIntegerLiteralKind kind;
-        char first;
-        char second;
+        Char32 first;
+        Char32 second;
         if (firstChar == '0')
         {
             first = cursor.First();
@@ -241,7 +246,7 @@ public struct Lexer : IEnumerator<Token>
     {
         for (; ; ) 
         {
-            char? current = cursor.Consume();
+            var current = cursor.Consume();
             if (current == null) break; 
             switch (current)
             {

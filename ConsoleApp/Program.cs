@@ -1,9 +1,8 @@
-﻿using Lexer.Low.Tokens;
-using System.Runtime.InteropServices;
+﻿using System;
 
-var input = "3 3 3 3 3";
+var input = Console.ReadLine();
 
-using var lexer = new Lexer.Low.Lexer(input!.ToCharArray());
+using var lexer = new Lexer.Low.LexEnumerator(input!);
 while (lexer.MoveNext())
 {
     var token = lexer.Current;
