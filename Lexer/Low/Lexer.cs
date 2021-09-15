@@ -13,7 +13,7 @@ public struct Lexer : IEnumerator<Token>
     {
         _inputReadOnlyMemory = input;
         _initReadOnlyMemory = input;
-        Current = new();
+        Current = default;
     }
     public void Dispose() { }
     public bool MoveNext()
@@ -26,201 +26,229 @@ public struct Lexer : IEnumerator<Token>
         return true;
     }
     public void Reset() => _inputReadOnlyMemory = _initReadOnlyMemory;
-    private Token Next(ReadOnlySpan<char> input)
+    private static Token Next(ReadOnlySpan<char> input)
     {
         var cursor = new Cursor(input);
         char consumed = cursor.Consume()!.Value;
+        TokenKind tokenKind;
+
         if (char.IsWhiteSpace(consumed))
         {
             ConsumeWhile(ref cursor, char.IsWhiteSpace);
-            return Token.WhitespaceKind(cursor.LenConsumed);
+            tokenKind = TokenKind.Whitespace();
         }
         else if (IsIdStart(consumed))
         {
             ConsumeWhile(ref cursor, IsIdContinue);
-            return Token.IdKind(cursor.LenConsumed);
+            tokenKind = TokenKind.Id();
         }
         else if ('0' <= consumed && consumed <= '9')
         {
-            let kind = consume_number(&mut cursor, char);
-            let suffix_start = cursor.len_consumed();
+            var kind = ConsumeNumber(ref cursor, consumed);
+            var suffix_start = cursor.LenConsumed;
 
-            if is_id_start(cursor.first()) {
-                cursor.consume();
-                consume_while(&mut cursor, | char | is_id_continue(char));
+            if (IsIdStart(cursor.First()))
+            {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, c => IsIdContinue(c));
             }
 
-            return Token.LiteralKind(
-                cursor.LenConsumed,
-                TokenLiteral.NumberKind(TokenNumberLiteral.IntegerKind(suffix_start),
-                Kind::Literal(TokenLiteralKind::Number(TokenNumberLiteral::new(
-                kind,
-                suffix_start,
-            )));
+            tokenKind = TokenKind.Literal(TokenLiteralKind.Number(new TokenNumberLiteral(kind, suffix_start)));
         }
-        '#' => {
-            consume_while(&mut cursor, | char | char != '\n');
-            TokenKind::Comment
+        else if (consumed == '#')
+        {
+            ConsumeWhile(ref cursor, c => c != '\n');
+            tokenKind = TokenKind.Comment();
         }
+        else
+        {
+            tokenKind = consumed switch
+            {
+                '(' => TokenKind.OpenParen(),
+                ')' => TokenKind.CloseParen(),
+                '{' => TokenKind.OpenBrace(),
+                '}' => TokenKind.CloseBrace(),
+                '[' => TokenKind.OpenBracket(),
+                ']' => TokenKind.CloseBracket(),
+                '.' => TokenKind.Dot(),
+                ',' => TokenKind.Comma(),
+                ':' => TokenKind.Colon(),
+                ';' => TokenKind.Semicolon(),
+                '=' => TokenKind.Eq(),
+                '!' => TokenKind.Bang(),
+                '<' => TokenKind.Lt(),
+                '>' => TokenKind.Gt(),
+                '+' => TokenKind.Plus(),
+                '-' => TokenKind.Minus(),
+                '*' => TokenKind.Star(),
+                '/' => TokenKind.Slash(),
+                '%' => TokenKind.Percent(),
+                '|' => TokenKind.Or(),
+                '&' => TokenKind.And(),
+                '^' => TokenKind.Caret(),
+                '~' => TokenKind.Tilde(),
+                '\'' => TokenKind.Literal(
+                    TokenLiteralKind.SingleQuotedStr(
+                        new TokenStrLiteral(ConsumeSingleQuoted(ref cursor)))),
+                '"' => TokenKind.Literal(
+                    TokenLiteralKind.DoubleQuotedStr(
+                        new TokenStrLiteral(ConsumeDoubleQuoted(ref cursor)))),
+                _ => TokenKind.Unknown(),
+            };
+        }
+        return new Token(tokenKind, cursor.LenConsumed);
     }
 
-    private void ConsumeWhile(ref Cursor cursor, Func<char, bool> pred)
+    private static void ConsumeWhile(ref Cursor cursor, Func<char, bool> pred)
     {
         while (pred(cursor.First()))
             cursor.Consume();
     }
 
-    private bool IsIdStart(char c) =>
+    private static bool IsIdStart(char c) =>
         ('a' <= c && c <= 'z')
         || ('A' <= c && c <= 'Z')
-        || (c == '_')
-        //|| (c > '\x7f' && UnicodeXID::is_xid_start(c));
+        || (c == '_');
+    //|| (c > '\x7f' && UnicodeXid.IsXidStart(c));
 
-    private bool IsIdContinue(char c)
-    {
+    private static bool IsIdContinue(char c) =>
         ('a' <= c && c <= 'z')
         || ('A' <= c && c <= 'Z')
         || ('0' <= c && c <= '9')
-        || (c == '_')
-        //|| (char > '\x7f' && UnicodeXID::is_xid_continue(char))
-    }
+        || (c == '_');
+    //|| (c > '\x7f' && UnicodeXid.IsXidContinue(c));
 
-    TokenNumberLiteralKind ConsumeNumber(ref Cursor cursor, first_char: char)
+    private static TokenNumberLiteralKind ConsumeNumber(ref Cursor cursor, char firstChar)
     {
-        let kind = if first_char == '0' {
-            match cursor.first()
-    {
-        'b' if cursor.second().is_digit(2) =>
+        TokenIntegerLiteralKind kind;
+        char first;
+        char second;
+        if (firstChar == '0')
         {
-            cursor.consume();
-            consume_while(cursor, | char | char.is_digit(2));
-            TokenIntegerLiteralKind::Binary
-                }
-                'o' if cursor.second().is_digit(8) =>
-                {
-                    cursor.consume();
-                    consume_while(cursor, | char | char.is_digit(8));
-                    TokenIntegerLiteralKind::Octal
-                }
-                'x' if cursor.second().is_digit(16) =>
-                {
-                    cursor.consume();
-                    consume_while(cursor, | char | char.is_digit(16));
-                    TokenIntegerLiteralKind::Hexadecimal
-                }
-                '0'.. = '9' => {
-            cursor.consume();
-            consume_while(cursor, | char | char.is_digit(10));
-            TokenIntegerLiteralKind::Decimal
-                  }
-        '.' | 'e' | 'E' => TokenIntegerLiteralKind::Decimal,
-                _ => return TokenNumberLiteralKind::Integer(TokenIntegerLiteralKind::Decimal),
+            first = cursor.First();
+            second = cursor.Second();
+            if (first == 'b' && second.IsBinary())
+            {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsBinary());
+                kind = TokenIntegerLiteralKind.Binary;
             }
-}
+            else if (first == 'o' && second.IsOctal())
+            {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsOctal());
+                kind = TokenIntegerLiteralKind.Octal;
+            }
+            else if (first == 'x' && second.IsHexical())
+            {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsHexical());
+                kind = TokenIntegerLiteralKind.Hexadecimal;
+            }
+            else if ('0' <= first && first <= '9')
+            {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsDecimal());
+                kind = TokenIntegerLiteralKind.Decimal;
+            }
+            else if (first == '.' || first == 'e' || first == 'E')
+                kind = TokenIntegerLiteralKind.Decimal;
+            else
+                return TokenNumberLiteralKind.Integer(TokenIntegerLiteralKind.Decimal);
+        }
+        else
+            kind = TokenIntegerLiteralKind.Decimal;
+
+        if (kind != TokenIntegerLiteralKind.Decimal)
+            return TokenNumberLiteralKind.Integer(kind);
+
+        first = cursor.First();
+        second = cursor.Second();
+
+        if (first == '.' || second.IsDecimal())
+        {
+            cursor.Consume();
+            ConsumeWhile(ref cursor, x => x.IsDecimal());
+
+            if ((cursor.First() is 'e' or 'E') && (cursor.Second() is '+' or '-') && cursor.Lookup(2).IsDecimal())
+            {
+                cursor.Consume();
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsDecimal());
+            }
+            else if ((cursor.First() is 'e' or 'E') && cursor.Second().IsDecimal()) {
+                cursor.Consume();
+                ConsumeWhile(ref cursor, x => x.IsDecimal());
+            }
+            return TokenNumberLiteralKind.Float();
+        }
+        if ((first is 'e' or 'E') &&
+            (
+                ((cursor.Second() is '+' or '-') && cursor.Lookup(2).IsDecimal()) 
+                || cursor.Second().IsDecimal()
+            ))
+        {
+            cursor.Consume();
+            if (cursor.First() is '+' or '-')
+                cursor.Consume();
+
+            ConsumeWhile(ref cursor, x => x.IsDecimal());
+            return TokenNumberLiteralKind.Float();
+        }
         else
         {
-            TokenIntegerLiteralKind::Decimal
-        };
-
-if kind != TokenIntegerLiteralKind::Decimal {
-    return TokenNumberLiteralKind::Integer(kind);
-}
-
-match cursor.first()
-{
-    '.' if cursor.second().is_digit(10) =>
-    {
-        cursor.consume();
-        consume_while(cursor, | char | char.is_digit(10));
-
-        match(cursor.first(), cursor.second(), cursor.lookup(2)) {
-            ('e' | 'E', '+' | '-', digit) if digit.is_digit(10) =>
-            {
-                cursor.consume();
-                cursor.consume();
-                consume_while(cursor, | char | char.is_digit(10));
-            }
-            ('e' | 'E', digit, _) if digit.is_digit(10) =>
-            {
-                cursor.consume();
-                consume_while(cursor, | char | char.is_digit(10));
-            }
-                    _ => { }
-                }
-
-        TokenNumberLiteralKind::Float
-            }
-            'e' | 'E'
-                if match cursor.second() {
-        '+' | '-' if cursor.lookup(2).is_digit(10) => true,
-                    digit if digit.is_digit(10) => true,
-                    _ => false,
-                } =>
-            {
-        cursor.consume();
-
-        match cursor.first() {
-            '+' | '-' => {
-                cursor.consume();
-            }
-            _ => { }
-                }
-
-        consume_while(cursor, | char | char.is_digit(10));
-
-        TokenNumberLiteralKind::Float
-            }
-    _ =>
-    {
-        consume_while(cursor, | char | char.is_digit(10));
-        TokenNumberLiteralKind::Integer(TokenIntegerLiteralKind::Decimal)
-            }
+            ConsumeWhile(ref cursor, x => x.IsDecimal());
+            return TokenNumberLiteralKind.Integer(TokenIntegerLiteralKind.Decimal);
         }
     }
 
-    //fn consume_single_quoted(cursor: &mut Cursor) -> bool
-    //{
-    //    // Normal case e.g. 'a'
-    //    if cursor.first() != '\\' && cursor.second() == '\'' {
-    //        cursor.consume();
-    //        cursor.consume();
-    //        return true;
-    //    }
+    private static bool ConsumeSingleQuoted(ref Cursor cursor)
+    {
+        // Normal case e.g. 'a'
+        if (cursor.First() != '\\' && cursor.Second() == '\'')
+        {
+            cursor.Consume();
+            cursor.Consume();
+            return true;
+        }
+        for (; ;) 
+        {
+            switch (cursor.First())
+            {
+                case '\'': 
+                    cursor.Consume();
+                    return true;
+                case '\\':
+                    cursor.Consume();
+                    cursor.Consume();
+                    break;
+                case '#': goto loopOut;
+                case '\0': goto loopOut;
+                case '\n': 
+                    if (cursor.Second() != '\'') 
+                        goto loopOut;
+                    goto default;
+                default:
+                    cursor.Consume();
+                    break;
+            }
+        }
+        loopOut:
+        return false;
+    }
 
-    //    loop {
-    //        match cursor.first() {
-    //            '\'' => {
-    //                cursor.consume();
-    //                return true;
-    //            }
-    //            '\\' => {
-    //                cursor.consume();
-    //                cursor.consume();
-    //            }
-    //            '#' => break,
-    //            '\0' => break,
-    //            '\n' if cursor.second() != '\'' => break,
-    //            _ => {
-    //                cursor.consume();
-    //            }
-    //        }
-    //    }
-
-    //    false
-    //}
-
-    //fn consume_double_quoted(cursor: &mut Cursor) -> bool
-    //{
-    //    while let Some(char) = cursor.consume() {
-    //        match char {
-    //            '"' => return true,
-    //            '\\' => {
-    //                cursor.consume();
-    //            }
-    //            _ => { }
-    //        }
-    //    }
-
-    //    false
-    //}
+    private static bool ConsumeDoubleQuoted(ref Cursor cursor)
+    {
+        for (; ; ) 
+        {
+            char? current = cursor.Consume();
+            if (current == null) break; 
+            switch (current)
+            {
+                case '\"': return true;
+                case '\\': cursor.Consume(); break;
+            }
+        }
+        return false;
+    }
 }

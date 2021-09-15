@@ -1,6 +1,6 @@
 ﻿namespace Lexer.Low;
 
-public ref struct Cursor
+internal ref struct Cursor
 {
     public int LenConsumed => InitialLength - _readOnlySpan.Length;
     public readonly int InitialLength;
