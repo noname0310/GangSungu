@@ -37,9 +37,9 @@ public struct LexEnumerator : IEnumerator<Token>
         var consumed = cursor.Consume()!.Value;
         TokenKind tokenKind;
 
-        if (char.IsWhiteSpace((char)consumed))
+        if (char.IsWhiteSpace((char)consumed))//maybe bug because of loss of data
         {
-            ConsumeWhile(ref cursor, x => char.IsWhiteSpace((char)x));
+            ConsumeWhile(ref cursor, x => char.IsWhiteSpace((char)x));//here is too
             tokenKind = TokenKind.Whitespace();
         }
         else if (IsIdStart(consumed))
