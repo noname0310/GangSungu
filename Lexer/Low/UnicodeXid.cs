@@ -3,7 +3,7 @@
 using System;
 using Char32 = System.UInt32;
 
-public static class UnicodeXid
+internal static class UnicodeXid
 {
     public static readonly (Char32, Char32)[] XidContinueTable = {
         (0x30, 0x39),
