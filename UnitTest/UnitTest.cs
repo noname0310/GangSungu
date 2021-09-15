@@ -37,7 +37,7 @@ public class UnitTest
     [TestMethod]
     public void LexTest()
     {
-        var lexer = new Lexer.Low.Lexer("a + b = (c * d) 10000".ToCharArray());
+        using var lexer = new Lexer.Low.Lexer("a + b = (c * d) 10000".ToCharArray());
         lexer.MoveNext();
         Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();

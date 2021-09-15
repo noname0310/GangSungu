@@ -165,7 +165,7 @@ public struct Lexer : IEnumerator<Token>
         first = cursor.First();
         second = cursor.Second();
 
-        if (first == '.' || second.IsDecimal())
+        if (first == '.' && second.IsDecimal())
         {
             cursor.Consume();
             ConsumeWhile(ref cursor, x => x.IsDecimal());
