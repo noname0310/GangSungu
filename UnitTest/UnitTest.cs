@@ -1,4 +1,4 @@
-using Lexer.Low;
+﻿using Lexer.Low;
 using Lexer.Low.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
@@ -39,6 +39,46 @@ public class UnitTest
     public void LexTest()
     {
         using var lexer = new LexEnumerator("a + b = (c * d) 10000");
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Plus, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Eq, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Star, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(TokenKindEnum.Literal, lexer.Current.Kind.Enum);
+    }
+
+    [TestMethod]
+    public void LexTest2()
+    {
+        using var lexer = new LexEnumerator("히히히 + 헤헤헤 = (호호호 * 하하핳) 10000");
         lexer.MoveNext();
         Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();

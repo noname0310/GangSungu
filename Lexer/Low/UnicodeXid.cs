@@ -1388,6 +1388,51 @@ internal static class UnicodeXid
             || c == '_'
             || (c > '\x7f' && XidContinue(c));
 
-    private static bool XidContinue(Char32 c) => 0 < Array.BinarySearch(XidContinueTable, c);
-    private static bool XidStart(Char32 c) => 0 < Array.BinarySearch(XidStartTable, c);
+    private static bool XidContinue(Char32 c) => BinarySearchRangeTable(XidContinueTable, c);
+    private static bool XidStart(Char32 c) => BinarySearchRangeTable(XidStartTable, c);
+    private static bool BinarySearchRangeTable((Char32 lo, Char32 hi)[] array, Char32 c)
+    {
+        return BinarySearch(array, 
+            x => { 
+                if (x.lo > c) 
+                    return CompareResult.Grater;
+                else if (x.hi < c)
+                    return CompareResult.Less;
+                else
+                    return CompareResult.Equal; 
+            }) != -1;
+    }
+    private static int BinarySearch<T>(T[] array, Func<T, CompareResult> comparator)
+    {
+        int low = 0;
+        int high = array.Length - 1;
+        int middle = (low + high + 1) / 2;
+        int location = -1;
+
+        do
+        {
+            switch(comparator(array[middle]))
+            {
+                case CompareResult.Equal:
+                    location = middle;
+                    break;
+                case CompareResult.Grater:
+                    high = middle - 1;
+                    break;
+                case CompareResult.Less:
+                    low = middle + 1;
+                    break;
+            }
+            middle = (low + high + 1) / 2;
+        } while ((low <= high) && (location == -1));
+
+        return location;
+    }
+
+    private enum CompareResult
+    {
+        Grater,
+        Less,
+        Equal
+    }
 }
