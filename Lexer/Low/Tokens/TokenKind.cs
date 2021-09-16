@@ -6,7 +6,7 @@ public readonly struct TokenKind
 {
     public readonly TokenKindEnum Enum { get; private init; }
     private readonly TokenLiteralKind TokenLiteralKind { get; init; }
-    public TokenLiteralKind ToTokenLiteralKind()
+    public TokenLiteralKind ToLiteral()
     {
         if (Enum != TokenKindEnum.Literal)
             throw new InvalidOperationException();

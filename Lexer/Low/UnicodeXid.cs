@@ -1404,10 +1404,10 @@ internal static class UnicodeXid
     }
     private static int BinarySearch<T>(T[] array, Func<T, CompareResult> comparator)
     {
-        int low = 0;
-        int high = array.Length - 1;
-        int middle = (low + high + 1) / 2;
-        int location = -1;
+        var low = 0;
+        var high = array.Length - 1;
+        var middle = (low + high + 1) / 2;
+        var location = -1;
 
         do
         {
