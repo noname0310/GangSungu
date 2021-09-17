@@ -13,5 +13,11 @@ using var lexer = new Lexer.Low.LexEnumerator(input!);
 while (lexer.MoveNext())
 {
     var token = lexer.Current;
-    Console.WriteLine(token);
+    Console.Write(token);
+    if(token.Kind.Enum == Lexer.Low.Tokens.TokenKindEnum.Literal)
+    {
+        Console.Write(' ');
+        Console.Write(token.Kind.ToLiteral());
+    }
+    Console.WriteLine();
 }

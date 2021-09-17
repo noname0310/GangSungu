@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Lexer;
 
-public record struct LexEnumerator : IEnumerator<Token>
+public struct LexEnumerator : IEnumerator<Token>
 {
     public Token Current => throw new System.NotImplementedException();
 

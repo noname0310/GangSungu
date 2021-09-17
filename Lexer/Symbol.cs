@@ -2,7 +2,7 @@
 
 namespace Lexer;
 
-public struct Symbol : IEquatable<Symbol>
+public readonly struct Symbol : IEquatable<Symbol>
 {
     public readonly string InternedStr;
     public Symbol(string str) => InternedStr = string.Intern(str);
