@@ -2,7 +2,7 @@
 
 namespace Lexer.Low.Tokens;
 
-public readonly struct TokenKind
+public readonly record struct TokenKind
 {
     public readonly TokenKindEnum Enum { get; private init; }
     private readonly TokenLiteralKind TokenLiteralKind { get; init; }

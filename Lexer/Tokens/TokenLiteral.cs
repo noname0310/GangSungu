@@ -1,6 +1,6 @@
 ﻿namespace Lexer.Tokens;
 
-public readonly struct TokenLiteral
+public readonly record struct TokenLiteral
 {
     public readonly TokenLiteralKind Kind;
     public readonly Symbol Str;

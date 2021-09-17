@@ -8,7 +8,7 @@ namespace Lexer.Low;
 
 using Char32 = UInt32;
 
-public struct LexEnumerator : IEnumerator<Token>
+public record struct LexEnumerator : IEnumerator<Token>
 {
     public Token Current { get; private set; }
     object IEnumerator.Current => Current;

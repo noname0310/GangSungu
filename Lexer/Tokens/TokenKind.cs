@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Lexer.Tokens;
 
 [StructLayout(LayoutKind.Explicit)]
-public readonly struct TokenKind
+public readonly record struct TokenKind
 {
     public TokenKindEnum Enum { get => _enum; private init => _enum = value; }
     private Symbol Symbol { init => _symbol = value; }
@@ -21,7 +21,7 @@ public readonly struct TokenKind
     {
         if (Enum != TokenKindEnum.Id)
             throw new InvalidOperationException();
-        return Symbol;
+        return _symbol;
     }
     public TokenLiteral ToLiteral()
     {
@@ -126,7 +126,7 @@ public readonly struct TokenKind
     public static TokenKind BitNot() => new() { Enum = TokenKindEnum.BitNot };
     public static TokenKind LogNot() => new() { Enum = TokenKindEnum.LogNot };
     public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, Symbol = symbol };
-    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, Symbol = new Symbol(string.Intern(id)) };
+    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, Symbol = new Symbol(id) };
     public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, TokenLiteral = tokenLiteral };
 }
 

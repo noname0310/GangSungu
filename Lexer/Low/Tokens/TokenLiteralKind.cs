@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Lexer.Low.Tokens;
 
 [StructLayout(LayoutKind.Explicit)]
-public readonly struct TokenLiteralKind
+public readonly record struct TokenLiteralKind
 {
     public TokenLiteralKindEnum Enum { get => _enum; private init => _enum = value; }
     private TokenNumberLiteral TokenNumberLiteral { init => _tokenNumberLiteral = value; }
