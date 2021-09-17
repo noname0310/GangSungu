@@ -127,7 +127,7 @@ public readonly struct TokenKind
     public static TokenKind LogNot() => new() { Enum = TokenKindEnum.LogNot };
     public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, Symbol = symbol };
     public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, Symbol = new Symbol(string.Intern(id)) };
-    public static TokenKind Literal(TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, TokenLiteral = tokenLiteral };
+    public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, TokenLiteral = tokenLiteral };
 }
 
 public enum TokenKindEnum : short

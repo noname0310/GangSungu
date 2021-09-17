@@ -101,7 +101,7 @@ public struct LexEnumerator : IEnumerator<Token>
                 _ => TokenKind.Unknown(),
             };
         }
-        return new Token(tokenKind, cursor.LenConsumed);
+        return new Token(in tokenKind, cursor.LenConsumed);
     }
 
     private static void ConsumeWhile(ref Cursor cursor, Func<Char32, bool> pred)
