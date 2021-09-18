@@ -41,12 +41,10 @@ public readonly struct Source
     {
         var line = FindLine(pos);
         var lineSpan = LineSpan(line);
-        return new LineCol();
-        //    line,
-        //    Slice(lineSpan)[..(pos - lineSpan.Low)]
-        //        .chars()
-        //        .count() as LineCol
-        //);
+        return new LineCol(
+            line,
+            Slice(lineSpan)[..(pos - lineSpan.Low)].Length
+        );
     }
 
     public ReadOnlySpan<char> Slice(Span span) =>
