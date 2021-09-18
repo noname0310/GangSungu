@@ -7,7 +7,7 @@ public readonly record struct TokenNumberLiteralKind
     public readonly TokenNumberLiteralKindEnum Enum { get; private init; }
     private readonly TokenIntegerLiteralKind _tokenIntegerLiteralKind { get; init; }
 
-    public TokenIntegerLiteralKind ToIntegerKind()
+    public TokenIntegerLiteralKind ToInteger()
     {
         if (Enum != TokenNumberLiteralKindEnum.Integer)
             throw new InvalidOperationException();

@@ -17,19 +17,19 @@ public readonly record struct TokenLiteralKind
     [FieldOffset(sizeof(TokenLiteralKindEnum))]
     private readonly TokenStrLiteral _tokenStrLiteral;
     
-    public TokenNumberLiteral ToNumberKind()
+    public TokenNumberLiteral ToNumber()
     {
         if (Enum != TokenLiteralKindEnum.Number)
             throw new InvalidOperationException();
         return _tokenNumberLiteral;
     }
-    public TokenStrLiteral ToSingleQuotedStrKind()
+    public TokenStrLiteral ToSingleQuotedStr()
     {
         if (Enum != TokenLiteralKindEnum.SingleQuotedStr)
             throw new InvalidOperationException();
         return _tokenStrLiteral;
     }
-    public TokenStrLiteral ToDoubleQuotedStrKind()
+    public TokenStrLiteral ToDoubleQuotedStr()
     {
         if (Enum != TokenLiteralKindEnum.DoubleQuotedStr)
             throw new InvalidOperationException();

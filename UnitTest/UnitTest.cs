@@ -29,10 +29,10 @@ public class UnitTest
     public void TokenLiteralKindInitalizeTest()
     {
         var foo = TokenLiteralKind.DoubleQuotedStr(new TokenStrLiteral(true));
-        Assert.AreEqual(true, foo.ToDoubleQuotedStrKind().Terminated);
+        Assert.AreEqual(true, foo.ToDoubleQuotedStr().Terminated);
         var bar = TokenLiteralKind.Number(new TokenNumberLiteral(TokenNumberLiteralKind.Float(), 10213123));
-        Assert.AreEqual(10213123, bar.ToNumberKind().SuffixStart);
-        Assert.AreEqual(TokenNumberLiteralKindEnum.Float, bar.ToNumberKind().Kind.Enum);
+        Assert.AreEqual(10213123, bar.ToNumber().SuffixStart);
+        Assert.AreEqual(TokenNumberLiteralKindEnum.Float, bar.ToNumber().Kind.Enum);
     }
 
     [TestMethod]

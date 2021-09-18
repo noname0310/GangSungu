@@ -1,6 +1,6 @@
 ﻿namespace Lexer;
 
-public readonly struct LineCol
+public readonly record struct LineCol
 {
     public readonly int Line;
     public readonly int Col;

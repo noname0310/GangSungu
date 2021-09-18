@@ -1,13 +1,14 @@
 ﻿using Lexer;
 using System;
+using System.IO;
 
+var input = File.ReadAllText("test2.sg");
 Console.WriteLine($"GC.CollectionCount: { GetCollectionCount() }");
-
-var input = Console.ReadLine();
-
-foreach (var token in new Lexer.Low.LexEnumerator(input!))
+var lexer = new Lexer.Low.LexEnumerator(input!);
+while(lexer.MoveNext())
 {
-    Console.Write(token);
+    var token = lexer.Current;
+    Console.WriteLine(token.Kind.Enum);
     if (token.Kind.Enum == Lexer.Low.Tokens.TokenKindEnum.Literal)
     {
         Console.Write(' ');
