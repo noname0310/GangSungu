@@ -33,7 +33,7 @@ public readonly struct Source
         {
             
         }
-
+        //TODO : NotImplementedException
         throw new NotImplementedException();
     }
     public LineCol FindLineCol(Pos pos)
@@ -46,6 +46,6 @@ public readonly struct Source
         );
     }
     public ReadOnlySpan<char> Slice(Span span) =>
-        Content.AsSpan()[(span.Low - span.Low)..(span.High - span.Low)];
+        Content.AsSpan()[(span.Low - Span.Low)..(span.High - Span.Low)];
     public ReadOnlySpan<char> SliceLine(int line) => Slice(LineSpan(line)).TrimEnd('\n').TrimEnd('\r');
 }

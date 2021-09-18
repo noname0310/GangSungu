@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace Lexer.Tokens;
 
-[StructLayout(LayoutKind.Explicit)]
 public readonly record struct TokenKind
 {
-    public TokenKindEnum Enum { get => _enum; private init => _enum = value; }
-    private Symbol Symbol { init => _symbol = value; }
-    private TokenLiteral TokenLiteral { init => _tokenLiteral = value; }
-
-    [FieldOffset(0)]
-    private readonly TokenKindEnum _enum;
-    [FieldOffset(sizeof(TokenKindEnum))]
-    private readonly Symbol _symbol;
-    [FieldOffset(sizeof(TokenKindEnum))]
-    private readonly TokenLiteral _tokenLiteral;
+    public readonly TokenKindEnum Enum { get; private init; }
+    private readonly Symbol _symbol { get; init; }
+    private readonly TokenLiteral _tokenLiteral { get; init; }
 
     public Symbol ToId()
     {
@@ -29,7 +20,7 @@ public readonly record struct TokenKind
             throw new InvalidOperationException();
         return _tokenLiteral;
     }
-    public override string ToString() => _enum switch
+    public override string ToString() => Enum switch
     {
         TokenKindEnum.Comment => "comment",
         TokenKindEnum.OpenParen => "'('",
@@ -125,9 +116,9 @@ public readonly record struct TokenKind
     public static TokenKind LogAnd() => new() { Enum = TokenKindEnum.LogAnd };
     public static TokenKind BitNot() => new() { Enum = TokenKindEnum.BitNot };
     public static TokenKind LogNot() => new() { Enum = TokenKindEnum.LogNot };
-    public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, Symbol = symbol };
-    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, Symbol = new Symbol(id) };
-    public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, TokenLiteral = tokenLiteral };
+    public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, _symbol = symbol };
+    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, _symbol = new Symbol(id) };
+    public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, _tokenLiteral = tokenLiteral };
 }
 
 public enum TokenKindEnum : short
