@@ -30,7 +30,11 @@ public struct LexEnumerator : IEnumerator<Token>
         _inputReadOnlyMemory = _inputReadOnlyMemory[(Current.Length << 2)..];
         return true;
     }
-    public void Reset() => _inputReadOnlyMemory = new(_initInput);
+    public void Reset()
+    {
+        _inputReadOnlyMemory = new(_initInput);
+        Current = default;
+    }
     private static Token Next(ReadOnlySpan<byte> input)
     {
         var cursor = new Cursor(input);
