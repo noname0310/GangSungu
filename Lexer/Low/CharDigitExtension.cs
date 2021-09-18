@@ -1,6 +1,5 @@
 ﻿namespace Lexer.Low;
 
-using System.Text;
 using Char32 = System.UInt32;
 
 internal static class CharDigitExtension

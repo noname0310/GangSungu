@@ -5,6 +5,7 @@ using System.IO;
 const string sourceName = "test.sg";
 var input = File.ReadAllText(sourceName);
 Console.WriteLine(input!);
+//LowLexerTest(input!);
 HighLexerTest(input!);
 
 static int GetCollectionCount()
@@ -17,12 +18,11 @@ static int GetCollectionCount()
 
 static void LowLexerTest(string input)
 {
-    Console.WriteLine($"GC.CollectionCount: { GetCollectionCount() }");
     var lexer = new Lexer.Low.LexEnumerator(input);
     while (lexer.MoveNext())
     {
         var token = lexer.Current;
-        Console.WriteLine(token.Kind.Enum);
+        Console.Write(token.Kind.Enum);
         if (token.Kind.Enum == Lexer.Low.Tokens.TokenKindEnum.Literal)
         {
             Console.Write(' ');
