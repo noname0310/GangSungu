@@ -1404,29 +1404,20 @@ internal static class UnicodeXid
     }
     private static int BinarySearch<T>(T[] array, Func<T, CompareResult> comparator)
     {
-        var low = 0;
-        var high = array.Length - 1;
-        var middle = (low + high + 1) / 2;
-        var location = -1;
-
-        do
+        var left = 0;
+        var right = array.Length - 1;
+        while (left <= right)
         {
-            switch(comparator(array[middle]))
-            {
-                case CompareResult.Equal:
-                    location = middle;
-                    break;
-                case CompareResult.Grater:
-                    high = middle - 1;
-                    break;
-                case CompareResult.Less:
-                    low = middle + 1;
-                    break;
-            }
-            middle = (low + high + 1) / 2;
-        } while ((low <= high) && (location == -1));
-
-        return location;
+            var middle = (left + right + 1) / 2;
+            var compareResult = comparator(array[middle]);
+            if (compareResult == CompareResult.Less)
+                left = middle + 1;
+            else if (compareResult == CompareResult.Grater)
+                right = middle - 1;
+            else
+                return middle;
+        }
+        return -1;
     }
 
     private enum CompareResult
