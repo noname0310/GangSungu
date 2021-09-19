@@ -29,7 +29,6 @@ public ref struct LexEnumerator
             _lowLexer = new LowLexEnumerator(source.Content);
             Current = default;
         }
-        public void Dispose() { }
         public bool MoveNext()
         {
             for (; ; )
@@ -73,8 +72,6 @@ public ref struct LexEnumerator
         
         Current = default;
     }
-    public void Dispose() { }
-
     public bool MoveNext()
     {
         if (!_current.HasValue)

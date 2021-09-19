@@ -18,7 +18,6 @@ public ref struct LexEnumerator
         _inputReadOnlySpan = _initInput.Span;
         Current = default;
     }
-    public void Dispose() { }
     public bool MoveNext()
     {
         if (_inputReadOnlySpan.IsEmpty)
