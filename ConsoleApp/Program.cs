@@ -20,8 +20,8 @@ static int GetCollectionCount()
 
 static void HighLexerTest(string content)
 {
-    var utf32Str = new Utf32String(content);
-    using var lexer = new LexEnumerator(new Source(new(new(0), new(utf32Str.Span.Length)), sourceName, SourcePath.Real(sourceName), utf32Str));
+    using var utf32Str = new Utf32String(content);
+    var lexer = new LexEnumerator(new Source(new(new(0), new(utf32Str.Span.Length)), sourceName, SourcePath.Real(sourceName), utf32Str.Span));
     while (lexer.MoveNext())
     {
         var token = lexer.Current;

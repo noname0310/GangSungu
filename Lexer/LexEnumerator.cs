@@ -1,7 +1,5 @@
 ﻿using Lexer.Tokens;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using LowLexEnumerator = Lexer.Low.LexEnumerator;
 using LowToken = Lexer.Low.Tokens.Token;
 using LowTokenKind = Lexer.Low.Tokens.TokenKind;
@@ -19,7 +17,7 @@ public ref struct LexEnumerator
     private ref struct UngluedTokenEnumerator
     {
         public Token Current { get; private set; }
-        private Source _source;
+        private readonly Source _source;
         private Pos _low;
         private LowLexEnumerator _lowLexer;
         public UngluedTokenEnumerator(Source source)

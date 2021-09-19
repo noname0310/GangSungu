@@ -9,7 +9,8 @@ public class UnitTest
     [TestMethod]
     public void CursorTest()
     {
-        var cursor = new Lexer.Low.Cursor(new Utf32String("abcde").Span);
+        using var utf32String = new Utf32String("abcde");
+        var cursor = new Lexer.Low.Cursor(utf32String.Span);
         Assert.AreEqual(5, cursor.InitialLength);
         Assert.AreEqual('a', cursor.First());
         Assert.AreEqual('b', cursor.Second());
@@ -37,7 +38,8 @@ public class UnitTest
     [TestMethod]
     public void LowLexTest()
     {
-        using var lexer = new Lexer.Low.LexEnumerator(new Utf32String("a + b = (c * d) 10000"));
+        using var utf32String = new Utf32String("a + b = (c * d) 10000");
+        var lexer = new Lexer.Low.LexEnumerator(utf32String.Span);
         lexer.MoveNext();
         Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
@@ -77,7 +79,8 @@ public class UnitTest
     [TestMethod]
     public void LowLexTest2()
     {
-        using var lexer = new Lexer.Low.LexEnumerator(new Utf32String("히히히𪜀 + 헤헤헤 = (호호호 * 하하핳) 10000"));
+        using var utf32String = new Utf32String("히히히𪜀 + 헤헤헤 = (호호호 * 하하핳) 10000");
+        var lexer = new Lexer.Low.LexEnumerator(utf32String.Span);
         lexer.MoveNext();
         Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
@@ -122,8 +125,8 @@ public class UnitTest
             "   return x + y;" +
             "}";
 
-        var utf32Str = new Utf32String(source);
-        using var lexer = new LexEnumerator(new(new(new(0), new(utf32Str.Span.Length)), "test", Lexer.SourcePath.Real("test"), utf32Str));
+        using var utf32Str = new Utf32String(source);
+        var lexer = new LexEnumerator(new(new(new(0), new(utf32Str.Span.Length)), "test", Lexer.SourcePath.Real("test"), utf32Str.Span));
         lexer.MoveNext();
         Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
@@ -171,8 +174,8 @@ public class UnitTest
             "fn add𪜀(x: i32, y: i32) i32 {" +
             "   return x + y;" +
             "}";
-        var utf32Str = new Utf32String(source);
-        using var lexer = new LexEnumerator(new(new(new(0), new(utf32Str.Span.Length)), "test", Lexer.SourcePath.Real("test"), utf32Str));
+        using var utf32Str = new Utf32String(source);
+        var lexer = new LexEnumerator(new(new(new(0), new(utf32Str.Span.Length)), "test", Lexer.SourcePath.Real("test"), utf32Str.Span));
         lexer.MoveNext();
         Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();

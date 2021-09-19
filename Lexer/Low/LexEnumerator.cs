@@ -1,8 +1,5 @@
 ﻿using Lexer.Low.Tokens;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Char32 = System.UInt32;
 
 namespace Lexer.Low;
@@ -11,11 +8,11 @@ public ref struct LexEnumerator
 {
     public Token Current { get; private set; }
     private ReadOnlySpan<Char32> _inputReadOnlySpan;
-    private readonly Utf32String _initInput;
-    public LexEnumerator(Utf32String input)
+    private readonly ReadOnlySpan<Char32> _initInput;
+    public LexEnumerator(ReadOnlySpan<Char32> input)
     {
         _initInput = input;
-        _inputReadOnlySpan = _initInput.Span;
+        _inputReadOnlySpan = _initInput;
         Current = default;
     }
     public bool MoveNext()
@@ -29,7 +26,7 @@ public ref struct LexEnumerator
     }
     public void Reset()
     {
-        _inputReadOnlySpan = _initInput.Span;
+        _inputReadOnlySpan = _initInput;
         Current = default;
     }
     private static Token Next(ReadOnlySpan<Char32> input)

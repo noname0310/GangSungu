@@ -9,22 +9,22 @@ public readonly ref struct Source
     public readonly Span Span;
     public readonly string Name;
     public readonly SourcePath Path;
-    public readonly Utf32String Content;
+    public readonly ReadOnlySpan<Char32> Content;
     public readonly List<Pos> Lines;
     public int LineNumber => Lines.Count;
 
-    public Source(Span span, string name, SourcePath path, Utf32String content)
+    public Source(Span span, string name, SourcePath path, ReadOnlySpan<Char32> content)
     {
+        Content = content;
         Lines = new(){ span.Low };
-        for (var i = 0; i < content.Span.Length; i++)
+        for (var i = 0; i < Content.Length; i++)
         {
-            if (content.Span[i] == '\n')
+            if (Content[i] == '\n')
                 Lines.Add(new Pos(span.Low + new Pos(i + 1)));
         }
         Span = span;
         Name = name;
         Path = path;
-        Content = content;
     }
     public Span LineSpan(int line) => new(Lines[line], Lines[line + 1]);
     public int FindLine(Pos pos)
@@ -47,6 +47,6 @@ public readonly ref struct Source
         );
     }
     public ReadOnlySpan<Char32> Slice(Span span) =>
-        Content.Span[(span.Low - Span.Low)..(span.High - Span.Low)];
+        Content[(span.Low - Span.Low)..(span.High - Span.Low)];
     public ReadOnlySpan<Char32> SliceLine(int line) => Slice(LineSpan(line)).TrimEnd('\n').TrimEnd('\r');
 }
