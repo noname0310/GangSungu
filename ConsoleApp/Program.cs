@@ -5,8 +5,10 @@ using System.IO;
 const string sourceName = "test.sg";
 var input = File.ReadAllText(sourceName);
 Console.WriteLine(input!);
-//LowLexerTest(input!);
-HighLexerTest(input!);
+HighLexerTest(
+            "fn add𪜀(x: i32, y: i32) i32 {" +
+            "   return x + y;" +
+            "}");
 
 static int GetCollectionCount()
 {
@@ -16,27 +18,9 @@ static int GetCollectionCount()
     return count;
 }
 
-static void LowLexerTest(string input)
-{
-    var lexer = new Lexer.Low.LexEnumerator(input);
-    while (lexer.MoveNext())
-    {
-        var token = lexer.Current;
-        Console.Write(token.Kind.Enum);
-        if (token.Kind.Enum == Lexer.Low.Tokens.TokenKindEnum.Literal)
-        {
-            Console.Write(' ');
-            Console.Write(token.Kind.ToLiteral());
-        }
-        Console.WriteLine();
-    }
-
-    Console.WriteLine($"GC.CollectionCount: { GetCollectionCount() }");
-}
-
 static void HighLexerTest(string content)
 {
-    var lexer = new LexEnumerator(new Source(new(new(0), new(content.Length)), sourceName, SourcePath.Real(sourceName), content));
+    using var lexer = new LexEnumerator(new Source(new(new(0), new(content.Length)), sourceName, SourcePath.Real(sourceName), content));
     while (lexer.MoveNext())
     {
         var token = lexer.Current;

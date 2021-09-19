@@ -54,7 +54,7 @@ public struct LexEnumerator : IEnumerator<Token>
         }
     }
 
-    public Token Current { get; private set;  }
+    public Token Current { get; private set; }
     object IEnumerator.Current => Current;
     private UngluedTokenEnumerator _ungluedTokenEnumerator;
     private Token? _current;

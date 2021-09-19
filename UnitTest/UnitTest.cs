@@ -1,6 +1,4 @@
-﻿using Lexer.Low;
-using Lexer.Low.Tokens;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 
 namespace UnitTest;
@@ -11,7 +9,7 @@ public class UnitTest
     [TestMethod]
     public void CursorTest()
     {
-        var cursor = new Cursor(Encoding.UTF32.GetBytes("abcde"));
+        var cursor = new Lexer.Low.Cursor(Encoding.UTF32.GetBytes("abcde"));
         Assert.AreEqual('a', cursor.First());
         Assert.AreEqual('b', cursor.Second());
         Assert.AreEqual('c', cursor.Lookup(2));
@@ -28,90 +26,186 @@ public class UnitTest
     [TestMethod]
     public void TokenLiteralKindInitalizeTest()
     {
-        var foo = TokenLiteralKind.DoubleQuotedStr(new TokenStrLiteral(true));
+        var foo = Lexer.Low.Tokens.TokenLiteralKind.DoubleQuotedStr(new Lexer.Low.Tokens.TokenStrLiteral(true));
         Assert.AreEqual(true, foo.ToDoubleQuotedStr().Terminated);
-        var bar = TokenLiteralKind.Number(new TokenNumberLiteral(TokenNumberLiteralKind.Float(), 10213123));
+        var bar = Lexer.Low.Tokens.TokenLiteralKind.Number(new Lexer.Low.Tokens.TokenNumberLiteral(Lexer.Low.Tokens.TokenNumberLiteralKind.Float(), 10213123));
         Assert.AreEqual(10213123, bar.ToNumber().SuffixStart);
-        Assert.AreEqual(TokenNumberLiteralKindEnum.Float, bar.ToNumber().Kind.Enum);
+        Assert.AreEqual(Lexer.Low.Tokens.TokenNumberLiteralKindEnum.Float, bar.ToNumber().Kind.Enum);
+    }
+
+    [TestMethod]
+    public void LowLexTest()
+    {
+        using var lexer = new Lexer.Low.LexEnumerator("a + b = (c * d) 10000");
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Plus, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Eq, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Star, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Literal, lexer.Current.Kind.Enum);
+    }
+
+    [TestMethod]
+    public void LowLexTest2()
+    {
+        using var lexer = new Lexer.Low.LexEnumerator("히히히𪜀 + 헤헤헤 = (호호호 * 하하핳) 10000");
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Plus, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Eq, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Star, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Low.Tokens.TokenKindEnum.Literal, lexer.Current.Kind.Enum);
     }
 
     [TestMethod]
     public void LexTest()
     {
-        using var lexer = new LexEnumerator("a + b = (c * d) 10000");
+        var source =
+            "fn add(x: i32, y: i32) i32 {" +
+            "   return x + y;" +
+            "}";
+        using var lexer = new Lexer.LexEnumerator(new(new(new(0), new(source.Length)), "test", Lexer.SourcePath.Real("test"), source));
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Plus, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Colon, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Eq, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Comma, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Colon, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Star, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.OpenBrace, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Add, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Literal, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Semicolon, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.CloseBrace, lexer.Current.Kind.Enum);
     }
 
     [TestMethod]
     public void LexTest2()
     {
-        using var lexer = new LexEnumerator("히히히 + 헤헤헤 = (호호호 * 하하핳) 10000");
+        var source =
+            "fn add𪜀(x: i32, y: i32) i32 {" +
+            "   return x + y;" +
+            "}";
+        using var lexer = new Lexer.LexEnumerator(new(new(new(0), new(source.Length)), "test", Lexer.SourcePath.Real("test"), source));
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Plus, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Colon, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Eq, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Comma, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.OpenParen, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Colon, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Star, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.OpenBrace, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.CloseParen, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Whitespace, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Add, lexer.Current.Kind.Enum);
         lexer.MoveNext();
-        Assert.AreEqual(TokenKindEnum.Literal, lexer.Current.Kind.Enum);
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Id, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.Semicolon, lexer.Current.Kind.Enum);
+        lexer.MoveNext();
+        Assert.AreEqual(Lexer.Tokens.TokenKindEnum.CloseBrace, lexer.Current.Kind.Enum);
     }
 }
