@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using Char32 = System.UInt32;
 
 namespace Lexer;
 
-public readonly struct Source
+public readonly ref struct Source
 {
     public readonly Span Span;
     public readonly string Name;
     public readonly SourcePath Path;
-    public readonly string Content;
+    public readonly Utf32String Content;
     public readonly List<Pos> Lines;
     public int LineNumber => Lines.Count;
 
-    public Source(Span span, string name, SourcePath path, string content)
+    public Source(Span span, string name, SourcePath path, Utf32String content)
     {
         Lines = new(){ span.Low };
-        for (var i = 0; i < content.Length; i++)
+        for (var i = 0; i < content.Span.Length; i++)
         {
-            if (content[i] == '\n')
+            if (content.Span[i] == '\n')
                 Lines.Add(new Pos(span.Low + new Pos(i + 1)));
         }
         Span = span;
@@ -45,7 +46,7 @@ public readonly struct Source
             Slice(lineSpan)[..(pos - lineSpan.Low)].Length
         );
     }
-    public ReadOnlySpan<char> Slice(Span span) =>
-        Content.AsSpan()[(span.Low - Span.Low)..(span.High - Span.Low)];
-    public ReadOnlySpan<char> SliceLine(int line) => Slice(LineSpan(line)).TrimEnd('\n').TrimEnd('\r');
+    public ReadOnlySpan<Char32> Slice(Span span) =>
+        Content.Span[(span.Low - Span.Low)..(span.High - Span.Low)];
+    public ReadOnlySpan<Char32> SliceLine(int line) => Slice(LineSpan(line)).TrimEnd('\n').TrimEnd('\r');
 }

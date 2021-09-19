@@ -14,12 +14,11 @@ using LowTokenNumberLiteralKind = Lexer.Low.Tokens.TokenNumberLiteralKind;
 
 namespace Lexer;
 
-public struct LexEnumerator : IEnumerator<Token>
+public ref struct LexEnumerator
 {
-    private struct UngluedTokenEnumerator : IEnumerator<Token>
+    private ref struct UngluedTokenEnumerator
     {
         public Token Current { get; private set; }
-        object IEnumerator.Current => Current;
         private Source _source;
         private Pos _low;
         private LowLexEnumerator _lowLexer;
@@ -39,7 +38,7 @@ public struct LexEnumerator : IEnumerator<Token>
                 var lowtoken = _lowLexer.Current;
                 var token = Convert(lowtoken, _low, _source);
                 _low = _low.Offset(lowtoken.Length);
-                if (token != null)
+                if (token.HasValue)
                 {
                     Current = token.Value;
                     return true;
@@ -55,7 +54,6 @@ public struct LexEnumerator : IEnumerator<Token>
     }
 
     public Token Current { get; private set; }
-    object IEnumerator.Current => Current;
     private UngluedTokenEnumerator _ungluedTokenEnumerator;
     private Token? _current;
     private Token? _next;
@@ -166,11 +164,11 @@ public struct LexEnumerator : IEnumerator<Token>
         if (lowToken.Kind.Enum == LowTokenKindEnum.Id) 
         {
             var sliceSpan = source.Slice(span);
-            if (sliceSpan == "true")
-                tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("true"), null));
-            else if (sliceSpan == "false")
-                tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("false"), null));
-            else
+            //if (sliceSpan == "true") //todo make string interner
+            //    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("true"), null));
+            //else if (sliceSpan == "false")
+            //    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("false"), null));
+            //else
                 tokenKind = TokenKind.Id(new Symbol(sliceSpan.ToString()));
         }
         else if (lowToken.Kind.Enum == LowTokenKindEnum.Literal)

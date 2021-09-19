@@ -3,39 +3,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Char32 = System.UInt32;
 
 namespace Lexer.Low;
 
-using Char32 = UInt32;
-
-public struct LexEnumerator : IEnumerator<Token>
+public ref struct LexEnumerator
 {
     public Token Current { get; private set; }
-    object IEnumerator.Current => Current;
-    private ReadOnlyMemory<byte> _inputReadOnlyMemory;
-    private readonly byte[] _initInput;
-    public LexEnumerator(string input)
+    private ReadOnlySpan<Char32> _inputReadOnlySpan;
+    private readonly Utf32String _initInput;
+    public LexEnumerator(Utf32String input)
     {
-        _initInput = Encoding.UTF32.GetBytes(input);
-        _inputReadOnlyMemory = new(_initInput);
+        _initInput = input;
+        _inputReadOnlySpan = _initInput.Span;
         Current = default;
     }
     public void Dispose() { }
     public bool MoveNext()
     {
-        if (_inputReadOnlyMemory.IsEmpty)
+        if (_inputReadOnlySpan.IsEmpty)
             return false;
 
-        Current = Next(_inputReadOnlyMemory.Span);
-        _inputReadOnlyMemory = _inputReadOnlyMemory[(Current.Length << 2)..];
+        Current = Next(_inputReadOnlySpan);
+        _inputReadOnlySpan = _inputReadOnlySpan[Current.Length..];
         return true;
     }
     public void Reset()
     {
-        _inputReadOnlyMemory = new(_initInput);
+        _inputReadOnlySpan = _initInput.Span;
         Current = default;
     }
-    private static Token Next(ReadOnlySpan<byte> input)
+    private static Token Next(ReadOnlySpan<Char32> input)
     {
         var cursor = new Cursor(input);
         var consumed = cursor.Consume()!.Value;
