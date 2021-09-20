@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Char32 = System.UInt32;
 
 namespace Lexer;
@@ -65,4 +66,9 @@ public readonly ref struct Source
     public ReadOnlySpan<Char32> Slice(Span span) =>
         Content[(span.Low - Span.Low)..(span.High - Span.Low)];
     public ReadOnlySpan<Char32> SliceLine(int line) => Slice(LineSpan(line)).TrimEnd('\n').TrimEnd('\r');
+    public override string ToString() => $"Source({Name})";
+    public override int GetHashCode() => Span.GetHashCode();
+    public override bool Equals([NotNullWhen(true)] object? obj) => throw new InvalidOperationException();
+    public static bool operator ==(in Source lhs, in Source rhs) => lhs.Path == rhs.Path;
+    public static bool operator !=(in Source lhs, in Source rhs) => lhs.Path == rhs.Path;
 }
