@@ -31,11 +31,11 @@ public readonly ref struct Source
     public int FindLine(Pos pos)
     {
         var searchResult = BinarySearch(Lines, pos);
-        if (searchResult.success)
-            return searchResult.index;
-        return searchResult.index - 1;
+        if (searchResult.Success)
+            return searchResult.Index;
+        return searchResult.Index - 1;
 
-        static (bool success, int index) BinarySearch(List<Pos> list, Pos item)
+        static (bool Success, int Index) BinarySearch(List<Pos> list, Pos item)
         {
             var size = list.Count;
             var left = 0;
