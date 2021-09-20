@@ -1,14 +1,11 @@
 ﻿using Lexer;
 using System;
 using System.IO;
+using System.Diagnostics;
 
-const string sourceName = "test.sg";
-var input = File.ReadAllText(sourceName);
-Console.WriteLine(input!);
-HighLexerTest(
-            "fn add𪜀(x: i32, y: i32) i32 {" +
-            "   return x + y;" +
-            "}");
+const string sourceName = "test2.sg";
+var input = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), sourceName));
+HighLexerTest(input!);
 
 static int GetCollectionCount()
 {
@@ -20,6 +17,8 @@ static int GetCollectionCount()
 
 static void HighLexerTest(string content)
 {
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
     using var utf32Str = new Utf32String(content);
     var lexer = new LexEnumerator(new Source(new(new(0), new(utf32Str.Span.Length)), sourceName, SourcePath.Real(sourceName), utf32Str.Span));
     while (lexer.MoveNext())
@@ -31,10 +30,13 @@ static void HighLexerTest(string content)
             Console.Write(' ');
         if (token.Kind.Enum == Lexer.Tokens.TokenKindEnum.Id)
             Console.Write(token.Kind.ToId().InternedStr);
+        else if (token.Kind.Enum == Lexer.Tokens.TokenKindEnum.Literal)
+            Console.Write(token.Kind.ToLiteral().Str.InternedStr);
         else
             Console.Write(token.Kind);
         Console.WriteLine();
     }
+    stopwatch.Stop();
     Console.WriteLine();
-    Console.WriteLine($"GC.CollectionCount: { GetCollectionCount() }");
+    Console.WriteLine($"GC.CollectionCount: { GetCollectionCount() }, ElapsedMilliseconds: {stopwatch.ElapsedMilliseconds}");
 }

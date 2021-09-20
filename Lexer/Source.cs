@@ -29,13 +29,29 @@ public readonly ref struct Source
     public Span LineSpan(int line) => new(Lines[line], Lines[line + 1]);
     public int FindLine(Pos pos)
     {
-        var searchResult = Lines.BinarySearch(pos);
-        if (0 <= searchResult)
+        var searchResult = BinarySearch(Lines, pos);
+        if (searchResult.success)
+            return searchResult.index;
+        return searchResult.index - 1;
+
+        static (bool success, int index) BinarySearch(List<Pos> list, Pos item)
         {
-            
+            var size = list.Count;
+            var left = 0;
+            var right = size;
+            while (left < right) 
+            {
+                var mid = left + size / 2;
+                if (list[mid] < item)
+                    left = mid + 1;
+                else if (item < list[mid])
+                    right = mid;
+                else
+                    return (true, mid);
+                size = right - left;
+            }
+            return (false, left);
         }
-        //TODO : NotImplementedException
-        throw new NotImplementedException();
     }
     public LineCol FindLineCol(Pos pos)
     {

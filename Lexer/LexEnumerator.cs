@@ -159,12 +159,12 @@ public ref struct LexEnumerator
         if (lowToken.Kind.Enum == LowTokenKindEnum.Id) 
         {
             var sliceSpan = source.Slice(span);
-            //if (sliceSpan == "true") //todo make string interner
-            //    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("true"), null));
-            //else if (sliceSpan == "false")
-            //    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("false"), null));
-            //else
-                tokenKind = TokenKind.Id(new Symbol(sliceSpan.ToString()));
+            if (sliceSpan.Compare("true"))
+                tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("true"), null));
+            else if (sliceSpan.Compare("false"))
+                tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.Bool, new Symbol("false"), null));
+            else
+                tokenKind = TokenKind.Id(new Symbol(sliceSpan.ToUtf16String()));
         }
         else if (lowToken.Kind.Enum == LowTokenKindEnum.Literal)
         {
@@ -190,16 +190,16 @@ public ref struct LexEnumerator
                                 LowTokenNumberLiteralKindEnum.Float => TokenLiteralKind.Float,
                                 _ => throw new InvalidOperationException(),
                             },
-                                new Symbol(str[..number.SuffixStart].ToString()),
+                                new Symbol(str[..number.SuffixStart].ToUtf16String()),
                                 number.SuffixStart == str.Length ? null : new Symbol(str[number.SuffixStart..].ToString())
                             ));
                     }
                     break;
                 case LowTokenLiteralKindEnum.SingleQuotedStr:
-                    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.SingleQuotedStr, new Symbol(str.ToString()), null));
+                    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.SingleQuotedStr, new Symbol(str.ToUtf16String()), null));
                     break;
                 case LowTokenLiteralKindEnum.DoubleQuotedStr:
-                    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.DoubleQuotedStr, new Symbol(str.ToString()), null));
+                    tokenKind = TokenKind.Literal(new TokenLiteral(TokenLiteralKind.DoubleQuotedStr, new Symbol(str.ToUtf16String()), null));
                     break;
             }
         }
@@ -208,7 +208,8 @@ public ref struct LexEnumerator
         return new Token(tokenKind.Value, span);
     }
 
-    public static void CheckLowToken(in LowToken lowToken, Span span, in Source source) {
+    public static void CheckLowToken(in LowToken lowToken, Span span, in Source source)
+    {
         //switch (lowToken.Kind.Enum)
         //{
         //    case LowTokenKindEnum.Unknown:
