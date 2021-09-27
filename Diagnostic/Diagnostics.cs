@@ -4,5 +4,5 @@ namespace GangSungu.Diagnostic;
 
 public static class Diagnostics
 {
-    public static readonly ConcurrentBag<DiagnosticItem> List = new();
+    public static readonly ConcurrentBag<Diagnostic> List = new();
 }

@@ -13,6 +13,7 @@ using LowTokenNumberLiteralKind = GangSungu.Lexer.Low.Tokens.TokenNumberLiteralK
 namespace GangSungu.Lexer;
 
 using GangSungu.Span;
+using GangSungu.Diagnostic;
 
 public ref struct LexEnumerator
 {
@@ -212,177 +213,177 @@ public ref struct LexEnumerator
 
     public static void CheckLowToken(in LowToken lowToken, Span span, in Source source)
     {
-        //switch (lowToken.Kind.Enum)
-        //{
-        //    case LowTokenKindEnum.Unknown:
-        //        Diagnostic::push_new(new Diagnostic::new(
-        //            Level::Error,
-        //            format!("unknown token '{}'", source.slice(span)),
-        //            MultiSpan::with_spans(vec![(
-        //                format!("'{}' is not allowed", source.slice(span)),
-        //                Some(span),
-        //            )]),
-        //        )),
-        //        break;
-        //    case LowTokenKindEnum.Whitespace: break;
-        //    case LowTokenKindEnum.Comment: break;
-        //    case LowTokenKindEnum.OpenParen: break;
-        //    case LowTokenKindEnum.CloseParen: break;
-        //    case LowTokenKindEnum.OpenBrace: break;
-        //    case LowTokenKindEnum.CloseBrace: break;
-        //    case LowTokenKindEnum.OpenBracket: break;
-        //    case LowTokenKindEnum.CloseBracket: break;
-        //    case LowTokenKindEnum.Dot: break;
-        //    case LowTokenKindEnum.Comma: break;
-        //    case LowTokenKindEnum.Colon: break;
-        //    case LowTokenKindEnum.Semicolon: break;
-        //    case LowTokenKindEnum.Eq: break;
-        //    case LowTokenKindEnum.Bang: break;
-        //    case LowTokenKindEnum.Lt: break;
-        //    case LowTokenKindEnum.Gt: break;
-        //    case LowTokenKindEnum.Plus: break;
-        //    case LowTokenKindEnum.Minus: break;
-        //    case LowTokenKindEnum.Star: break;
-        //    case LowTokenKindEnum.Slash: break;
-        //    case LowTokenKindEnum.Percent: break;
-        //    case LowTokenKindEnum.Or: break;
-        //    case LowTokenKindEnum.And: break;
-        //    case LowTokenKindEnum.Caret: break;
-        //    case LowTokenKindEnum.Tilde: break;
-        //    case LowTokenKindEnum.Id: break;
-        //    case LowTokenKindEnum.Literal:
-        //        var literal = lowToken.Kind.ToLiteral();
-        //        switch (literal.Enum)
-        //        {
-        //            case LowTokenLiteralKindEnum.Number:
-        //                if number.suffix_start() != token.len() {
-        //                    let suffix = &source.slice(span)[number.suffix_start()..];
+        switch (lowToken.Kind.Enum)
+        {
+            case LowTokenKindEnum.Unknown:
+                new Diagnostic(
+                    Level.Error, $"unknown token '{source.Slice(span).ToUtf16String()}'",
+                    new MultiSpan(new(){ new("'{}' is not allowed", span) }))
+                    .Register();
+                break;
+            case LowTokenKindEnum.Whitespace: break;
+            case LowTokenKindEnum.Comment: break;
+            case LowTokenKindEnum.OpenParen: break;
+            case LowTokenKindEnum.CloseParen: break;
+            case LowTokenKindEnum.OpenBrace: break;
+            case LowTokenKindEnum.CloseBrace: break;
+            case LowTokenKindEnum.OpenBracket: break;
+            case LowTokenKindEnum.CloseBracket: break;
+            case LowTokenKindEnum.Dot: break;
+            case LowTokenKindEnum.Comma: break;
+            case LowTokenKindEnum.Colon: break;
+            case LowTokenKindEnum.Semicolon: break;
+            case LowTokenKindEnum.Eq: break;
+            case LowTokenKindEnum.Bang: break;
+            case LowTokenKindEnum.Lt: break;
+            case LowTokenKindEnum.Gt: break;
+            case LowTokenKindEnum.Plus: break;
+            case LowTokenKindEnum.Minus: break;
+            case LowTokenKindEnum.Star: break;
+            case LowTokenKindEnum.Slash: break;
+            case LowTokenKindEnum.Percent: break;
+            case LowTokenKindEnum.Or: break;
+            case LowTokenKindEnum.And: break;
+            case LowTokenKindEnum.Caret: break;
+            case LowTokenKindEnum.Tilde: break;
+            case LowTokenKindEnum.Id: break;
+            case LowTokenKindEnum.Literal:
+                var literal = lowToken.Kind.ToLiteral();
+                switch (literal.Enum)
+                {
+                    case LowTokenLiteralKindEnum.Number:
+                        {
+                            var number = literal.ToNumber();
+                            if (number.SuffixStart != lowToken.Length)
+                            {
+                                //var suffix = source.Slice(span)[number.SuffixStart..];
 
-        //                    // TODO: Perform value overflow check.
+                                //// TODO: Perform value overflow check.
 
-        //                    match number.kind() {
-        //                        LowTokenNumberLiteralKind::Integer (integer) => match suffix {
-        //                            suffix if is_integer_suffix (suffix) => { }
-        //                            suffix if is_float_suffix (suffix) =>
-        //                            {
-        //                                if !integer.is_decimal() {
-        //                                    Diagnostic::push_new(Diagnostic::new(
-        //                                        Level::Error,
-        //                                        format!("invalid use of float suffix '{}'", suffix),
-        //                                        MultiSpan::with_spans(vec![
-        //                                            (
-        //                                                format!("float suffix '{}' is not allowed for non-decimal integer literals", suffix),
-        //                                                Some(Span::new(
-        //                                                    span.low().offset(number.suffix_start() as _),
-        //                                                    span.high(),
-        //                                                )),
-        //                                            ),
-        //                                            (format!("consider use integer suffix or remove it"), None),
-        //                                        ]),
-        //                                    ));
-        //                                }
-        //                            }
-        //                            suffix =>
-        //                            {
-        //                                Diagnostic::push_new(Diagnostic::new(
-        //                                    Level::Error,
-        //                                    format!("invalid suffix '{}'", suffix),
-        //                                    MultiSpan::with_spans(vec![
-        //                                        (
-        //                                            format!("'{}' is not valid suffix", suffix),
-        //                                            Some(Span::new(
-        //                                                span.low().offset(number.suffix_start() as _),
-        //                                                span.high(),
-        //                                            )),
-        //                                        ),
-        //                                        (format!("consider use integer suffix or remove it"), None),
-        //                                    ]),
-        //                                ));
-        //                            }
-        //                         },
-        //                        LowTokenNumberLiteralKind::Float => match suffix {
-        //                            suffix if is_float_suffix (suffix) => { }
-        //                            suffix if is_integer_suffix (suffix) =>
-        //                            {
-        //                                Diagnostic::push_new(Diagnostic::new(
-        //                                    Level::Error,
-        //                                    format!("invalid use of integer suffix '{}'", suffix),
-        //                                    MultiSpan::with_spans(vec![
-        //                                        (
-        //                                            format!("integer suffix '{}' is not allowed for float literals", suffix),
-        //                                            Some(Span::new(
-        //                                                span.low().offset(number.suffix_start() as _),
-        //                                                span.high(),
-        //                                            )),
-        //                                        ),
-        //                                        (format!("consider use 'f64' or remove it"), None),
-        //                                    ]),
-        //                                ));
-        //                            }
-        //                            suffix =>
-        //                            {
-        //                                Diagnostic::push_new(Diagnostic::new(
-        //                                    Level::Error,
-        //                                    format!("invalid suffix '{}'", suffix),
-        //                                    MultiSpan::with_spans(vec![
-        //                                        (
-        //                                            format!("'{}' is not valid suffix", suffix),
-        //                                            Some(Span::new(
-        //                                                span.low().offset(number.suffix_start() as _),
-        //                                                span.high(),
-        //                                            )),
-        //                                        ),
-        //                                        (format!("consider use 'f64' or remove it"), None),
-        //                                    ]),
-        //                                ));
-        //                            }
-        //                        },
-        //                    }
-        //                }
-        //                break;
-        //            case LowTokenLiteralKindEnum.SingleQuotedStr:
-        //                {
-        //                    var str = literal.ToSingleQuotedStr();
-        //                    // TODO: Detect long-length literals and emit diagnostics for it.
-        //                    if (!str.Terminated)
-        //                    {
-        //                        Diagnostic::push_new(Diagnostic::new(
-        //                            Level::Error,
-        //                            format!("single quoted literal is not closed"),
-        //                            MultiSpan::with_spans(vec![
-        //                                (format!("' is missing"), Some(span)),
-        //                                (format!("add ' at the end of the literal"), None),
-
-
-
-        //                            ]),
+                                //match number.kind() {
+                                //    LowTokenNumberLiteralKind::Integer (integer) => match suffix {
+                                //        suffix if is_integer_suffix (suffix) => { }
+                                //        suffix if is_float_suffix (suffix) =>
+                                //        {
+                                //            if !integer.is_decimal() {
+                                //                Diagnostic::push_new(Diagnostic::new(
+                                //                    Level::Error,
+                                //                    format!("invalid use of float suffix '{}'", suffix),
+                                //                    MultiSpan::with_spans(vec![
+                                //                        (
+                                //                            format!("float suffix '{}' is not allowed for non-decimal integer literals", suffix),
+                                //                            Some(Span::new(
+                                //                                span.low().offset(number.suffix_start() as _),
+                                //                                span.high(),
+                                //                            )),
+                                //                        ),
+                                //                        (format!("consider use integer suffix or remove it"), None),
+                                //                    ]),
+                                //                ));
+                                //            }
+                                //        }
+                                //        suffix =>
+                                //        {
+                                //            Diagnostic::push_new(Diagnostic::new(
+                                //                Level::Error,
+                                //                format!("invalid suffix '{}'", suffix),
+                                //                MultiSpan::with_spans(vec![
+                                //                    (
+                                //                        format!("'{}' is not valid suffix", suffix),
+                                //                        Some(Span::new(
+                                //                            span.low().offset(number.suffix_start() as _),
+                                //                            span.high(),
+                                //                        )),
+                                //                    ),
+                                //                    (format!("consider use integer suffix or remove it"), None),
+                                //                ]),
+                                //            ));
+                                //        }
+                                //     },
+                                //    LowTokenNumberLiteralKind::Float => match suffix {
+                                //        suffix if is_float_suffix (suffix) => { }
+                                //        suffix if is_integer_suffix (suffix) =>
+                                //        {
+                                //            Diagnostic::push_new(Diagnostic::new(
+                                //                Level::Error,
+                                //                format!("invalid use of integer suffix '{}'", suffix),
+                                //                MultiSpan::with_spans(vec![
+                                //                    (
+                                //                        format!("integer suffix '{}' is not allowed for float literals", suffix),
+                                //                        Some(Span::new(
+                                //                            span.low().offset(number.suffix_start() as _),
+                                //                            span.high(),
+                                //                        )),
+                                //                    ),
+                                //                    (format!("consider use 'f64' or remove it"), None),
+                                //                ]),
+                                //            ));
+                                //        }
+                                //        suffix =>
+                                //        {
+                                //            Diagnostic::push_new(Diagnostic::new(
+                                //                Level::Error,
+                                //                format!("invalid suffix '{}'", suffix),
+                                //                MultiSpan::with_spans(vec![
+                                //                    (
+                                //                        format!("'{}' is not valid suffix", suffix),
+                                //                        Some(Span::new(
+                                //                            span.low().offset(number.suffix_start() as _),
+                                //                            span.high(),
+                                //                        )),
+                                //                    ),
+                                //                    (format!("consider use 'f64' or remove it"), None),
+                                //                ]),
+                                //            ));
+                                //        }
+                                //    },
+                                //}
+                            }
+                        }
+                        break;
+                    case LowTokenLiteralKindEnum.SingleQuotedStr:
+                        {
+                            var str = literal.ToSingleQuotedStr();
+                            // TODO: Detect long-length literals and emit diagnostics for it.
+                            if (!str.Terminated)
+                            {
+                                Diagnostic::push_new(Diagnostic::new(
+                                    Level::Error,
+                                    format!("single quoted literal is not closed"),
+                                    MultiSpan::with_spans(vec![
+                                        (format!("' is missing"), Some(span)),
+                                        (format!("add ' at the end of the literal"), None),
 
 
 
-        //                        ));
-        //                    }
-        //                }
-        //                break;
-        //            case LowTokenLiteralKindEnum.DoubleQuotedStr:
-        //                var str = literal.ToDoubleQuotedStr();
-        //                if !str.terminated() {
-        //                    Diagnostic::push_new(Diagnostic::new(
-        //                        Level::Error,
-        //                        format!("double quoted literal is not closed"),
-        //                        MultiSpan::with_spans(vec![
-        //                            (format!("\" is missing"), Some(span)),
-        //                            (format!("add \" at the end of the literal"), None),
+                                    ]),
 
 
-        //                        ]),
+
+                                ));
+                            }
+                        }
+                        break;
+                    case LowTokenLiteralKindEnum.DoubleQuotedStr:
+                        var str = literal.ToDoubleQuotedStr();
+                        if !str.terminated() {
+                            Diagnostic::push_new(Diagnostic::new(
+                                Level::Error,
+                                format!("double quoted literal is not closed"),
+                                MultiSpan::with_spans(vec![
+                                    (format!("\" is missing"), Some(span)),
+                                    (format!("add \" at the end of the literal"), None),
 
 
-        //                    ));
-        //                }
-        //                break;
-        //        }
-        //        break;
-        //}
+                                ]),
+
+
+                            ));
+                        }
+                        break;
+                }
+                break;
+        }
     }
 
     private static bool IsIntegerSuffix(ReadOnlySpan<char> suffix)
