@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,5 +17,10 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Diagnostic\GangSungu.Diagnostic.csproj" />
+    <ProjectReference Include="..\Span\GangSungu.Span.csproj" />
+  </ItemGroup>
 
 </Project>

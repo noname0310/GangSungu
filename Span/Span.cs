@@ -1,4 +1,4 @@
-﻿namespace Lexer;
+﻿namespace GangSungu.Span;
 
 public readonly record struct Span
 {

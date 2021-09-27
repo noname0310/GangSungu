@@ -1,7 +1,8 @@
-﻿namespace Diagnostic;
+﻿using System.Collections.Concurrent;
+
+namespace GangSungu.Diagnostic;
 
 public static class Diagnostics
 {
-    //must be locked when use
-    public static readonly List<Diagnostic> List = new();
+    public static readonly ConcurrentBag<DiagnosticItem> List = new();
 }

@@ -1,19 +1,18 @@
-﻿namespace Diagnostic;
+﻿using System.Collections.Concurrent;
 
-public struct Diagnostic
+namespace GangSungu.Diagnostic;
+
+public struct DiagnosticItem
 {
     public readonly Level Level;
     public readonly string Message;
     public readonly MultiSpan MultiSpan;
-    
-    public Diagnostic(Level level, string message, MultiSpan span)
+    public static ConcurrentBag<DiagnosticItem> Diagnostics => Diagnostic.Diagnostics.List;
+    public DiagnosticItem(Level level, string message, MultiSpan span)
     {
         Level = level;
         Message = message;
         MultiSpan = span;
     }
-    public void Register()
-    {
-
-    }
+    public void Register() => Diagnostic.Diagnostics.List.Add(this);
 }

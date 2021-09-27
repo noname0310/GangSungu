@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Lexer.Low.Tokens;
+namespace GangSungu.Lexer.Low.Tokens;
 
 [StructLayout(LayoutKind.Explicit)]
 public readonly record struct TokenLiteralKind

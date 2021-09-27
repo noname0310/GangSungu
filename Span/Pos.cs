@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Lexer;
+﻿namespace GangSungu.Span;
 
 public readonly record struct Pos : IEquatable<Pos>, IComparable<Pos>
 {

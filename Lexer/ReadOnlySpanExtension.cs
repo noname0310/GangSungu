@@ -2,7 +2,7 @@
 using System.Text;
 using Char32 = System.UInt32;
 
-namespace Lexer;
+namespace GangSungu.Lexer;
 
 internal static class ReadOnlySpanExtension
 {

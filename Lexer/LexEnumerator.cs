@@ -1,16 +1,18 @@
-﻿using Lexer.Tokens;
+﻿using GangSungu.Lexer.Tokens;
 using System;
-using LowLexEnumerator = Lexer.Low.LexEnumerator;
-using LowToken = Lexer.Low.Tokens.Token;
-using LowTokenKind = Lexer.Low.Tokens.TokenKind;
-using LowTokenKindEnum = Lexer.Low.Tokens.TokenKindEnum;
-using LowTokenNumberLiteralKindEnum = Lexer.Low.Tokens.TokenNumberLiteralKindEnum;
-using LowTokenIntegerLiteralKind = Lexer.Low.Tokens.TokenIntegerLiteralKind;
-using LowTokenLiteralKind = Lexer.Low.Tokens.TokenLiteralKind;
-using LowTokenLiteralKindEnum = Lexer.Low.Tokens.TokenLiteralKindEnum;
-using LowTokenNumberLiteralKind = Lexer.Low.Tokens.TokenNumberLiteralKind;
+using LowLexEnumerator = GangSungu.Lexer.Low.LexEnumerator;
+using LowToken = GangSungu.Lexer.Low.Tokens.Token;
+using LowTokenKind = GangSungu.Lexer.Low.Tokens.TokenKind;
+using LowTokenKindEnum = GangSungu.Lexer.Low.Tokens.TokenKindEnum;
+using LowTokenNumberLiteralKindEnum = GangSungu.Lexer.Low.Tokens.TokenNumberLiteralKindEnum;
+using LowTokenIntegerLiteralKind = GangSungu.Lexer.Low.Tokens.TokenIntegerLiteralKind;
+using LowTokenLiteralKind = GangSungu.Lexer.Low.Tokens.TokenLiteralKind;
+using LowTokenLiteralKindEnum = GangSungu.Lexer.Low.Tokens.TokenLiteralKindEnum;
+using LowTokenNumberLiteralKind = GangSungu.Lexer.Low.Tokens.TokenNumberLiteralKind;
 
-namespace Lexer;
+namespace GangSungu.Lexer;
+
+using GangSungu.Span;
 
 public ref struct LexEnumerator
 {
@@ -213,7 +215,7 @@ public ref struct LexEnumerator
         //switch (lowToken.Kind.Enum)
         //{
         //    case LowTokenKindEnum.Unknown:
-        //        Diagnostic::push_new(Diagnostic::new(
+        //        Diagnostic::push_new(new Diagnostic::new(
         //            Level::Error,
         //            format!("unknown token '{}'", source.slice(span)),
         //            MultiSpan::with_spans(vec![(
@@ -224,7 +226,7 @@ public ref struct LexEnumerator
         //        break;
         //    case LowTokenKindEnum.Whitespace: break;
         //    case LowTokenKindEnum.Comment: break;
-        //    case LowTokenKindEnum.OpenParen:  break;
+        //    case LowTokenKindEnum.OpenParen: break;
         //    case LowTokenKindEnum.CloseParen: break;
         //    case LowTokenKindEnum.OpenBrace: break;
         //    case LowTokenKindEnum.CloseBrace: break;
@@ -236,7 +238,7 @@ public ref struct LexEnumerator
         //    case LowTokenKindEnum.Semicolon: break;
         //    case LowTokenKindEnum.Eq: break;
         //    case LowTokenKindEnum.Bang: break;
-        //    case LowTokenKindEnum.Lt:  break;
+        //    case LowTokenKindEnum.Lt: break;
         //    case LowTokenKindEnum.Gt: break;
         //    case LowTokenKindEnum.Plus: break;
         //    case LowTokenKindEnum.Minus: break;
@@ -259,9 +261,10 @@ public ref struct LexEnumerator
         //                    // TODO: Perform value overflow check.
 
         //                    match number.kind() {
-        //                        LowTokenNumberLiteralKind::Integer(integer) => match suffix {
-        //                            suffix if is_integer_suffix(suffix) => {}
-        //                            suffix if is_float_suffix(suffix) => {
+        //                        LowTokenNumberLiteralKind::Integer (integer) => match suffix {
+        //                            suffix if is_integer_suffix (suffix) => { }
+        //                            suffix if is_float_suffix (suffix) =>
+        //                            {
         //                                if !integer.is_decimal() {
         //                                    Diagnostic::push_new(Diagnostic::new(
         //                                        Level::Error,
@@ -279,7 +282,8 @@ public ref struct LexEnumerator
         //                                    ));
         //                                }
         //                            }
-        //                            suffix => {
+        //                            suffix =>
+        //                            {
         //                                Diagnostic::push_new(Diagnostic::new(
         //                                    Level::Error,
         //                                    format!("invalid suffix '{}'", suffix),
@@ -295,10 +299,11 @@ public ref struct LexEnumerator
         //                                    ]),
         //                                ));
         //                            }
-        //                        },
+        //                         },
         //                        LowTokenNumberLiteralKind::Float => match suffix {
-        //                            suffix if is_float_suffix(suffix) => {}
-        //                            suffix if is_integer_suffix(suffix) => {
+        //                            suffix if is_float_suffix (suffix) => { }
+        //                            suffix if is_integer_suffix (suffix) =>
+        //                            {
         //                                Diagnostic::push_new(Diagnostic::new(
         //                                    Level::Error,
         //                                    format!("invalid use of integer suffix '{}'", suffix),
@@ -314,7 +319,8 @@ public ref struct LexEnumerator
         //                                    ]),
         //                                ));
         //                            }
-        //                            suffix => {
+        //                            suffix =>
+        //                            {
         //                                Diagnostic::push_new(Diagnostic::new(
         //                                    Level::Error,
         //                                    format!("invalid suffix '{}'", suffix),
@@ -338,17 +344,20 @@ public ref struct LexEnumerator
         //                {
         //                    var str = literal.ToSingleQuotedStr();
         //                    // TODO: Detect long-length literals and emit diagnostics for it.
-        //                    if (!str.Terminated) {
+        //                    if (!str.Terminated)
+        //                    {
         //                        Diagnostic::push_new(Diagnostic::new(
         //                            Level::Error,
         //                            format!("single quoted literal is not closed"),
         //                            MultiSpan::with_spans(vec![
         //                                (format!("' is missing"), Some(span)),
         //                                (format!("add ' at the end of the literal"), None),
-    
+
+
 
         //                            ]),
-    
+
+
 
         //                        ));
         //                    }
@@ -363,9 +372,11 @@ public ref struct LexEnumerator
         //                        MultiSpan::with_spans(vec![
         //                            (format!("\" is missing"), Some(span)),
         //                            (format!("add \" at the end of the literal"), None),
-        
+
+
         //                        ]),
-        
+
+
         //                    ));
         //                }
         //                break;

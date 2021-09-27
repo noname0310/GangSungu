@@ -1,4 +1,4 @@
-﻿namespace Lexer.Tokens;
+﻿namespace GangSungu.Lexer.Tokens;
 
 public enum TokenLiteralKind
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Lexer;
+﻿namespace GangSungu.Span;
 
 public readonly struct Symbol : IEquatable<Symbol>
 {

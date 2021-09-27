@@ -5,11 +5,13 @@ VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{215139A9-BD45-405E-BB22-B5D31E8A6D73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lexer", "Lexer\Lexer.csproj", "{86D54796-6304-4FE3-A71B-5AD8D7943CF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GangSungu.Lexer", "Lexer\GangSungu.Lexer.csproj", "{86D54796-6304-4FE3-A71B-5AD8D7943CF3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnostic", "Diagnostic\Diagnostic.csproj", "{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GangSungu.Diagnostic", "Diagnostic\GangSungu.Diagnostic.csproj", "{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GangSungu.Span", "Span\GangSungu.Span.csproj", "{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

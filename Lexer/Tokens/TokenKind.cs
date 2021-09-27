@@ -1,6 +1,7 @@
-﻿using System;
+﻿using GangSungu.Span;
+using System;
 
-namespace Lexer.Tokens;
+namespace GangSungu.Lexer.Tokens;
 
 public readonly record struct TokenKind
 {

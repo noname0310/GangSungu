@@ -1,8 +1,8 @@
-﻿using Lexer.Low.Tokens;
+﻿using GangSungu.Lexer.Low.Tokens;
 using System;
 using Char32 = System.UInt32;
 
-namespace Lexer.Low;
+namespace GangSungu.Lexer.Low;
 
 public ref struct LexEnumerator
 {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Char32 = System.UInt32;
+﻿using Char32 = System.UInt32;
 
-namespace Lexer;
+namespace GangSungu.Span;
 
 public readonly ref struct Source
 {

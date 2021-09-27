@@ -1,4 +1,6 @@
-﻿namespace Lexer.Tokens;
+﻿using GangSungu.Span;
+
+namespace GangSungu.Lexer.Tokens;
 
 public readonly record struct TokenLiteral
 {

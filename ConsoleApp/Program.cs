@@ -1,7 +1,8 @@
-﻿using Lexer;
-using System;
+﻿using System;
 using System.IO;
 using System.Diagnostics;
+using GangSungu.Lexer;
+using GangSungu.Span;
 
 const string sourceName = "test2.sg";
 var input = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), sourceName));
@@ -28,9 +29,9 @@ static void HighLexerTest(string content)
         Console.Write(enumStr);
         for (int i = 0; i < 20 - enumStr.Length; i++)
             Console.Write(' ');
-        if (token.Kind.Enum == Lexer.Tokens.TokenKindEnum.Id)
+        if (token.Kind.Enum == GangSungu.Lexer.Tokens.TokenKindEnum.Id)
             Console.Write(token.Kind.ToId().InternedStr);
-        else if (token.Kind.Enum == Lexer.Tokens.TokenKindEnum.Literal)
+        else if (token.Kind.Enum == GangSungu.Lexer.Tokens.TokenKindEnum.Literal)
             Console.Write(token.Kind.ToLiteral().Str.InternedStr);
         else
             Console.Write(token.Kind);

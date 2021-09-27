@@ -1,6 +1,6 @@
-﻿using Lexer;
+﻿namespace GangSungu.Diagnostic;
 
-namespace Diagnostic;
+using GangSungu.Span;
 
 public struct MultiSpan
 {

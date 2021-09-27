@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Char32 = System.UInt32;
 
-namespace Lexer;
+namespace GangSungu.Lexer;
 
 public ref struct Utf32String
 {

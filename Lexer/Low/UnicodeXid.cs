@@ -1,4 +1,4 @@
-﻿namespace Lexer.Low;
+﻿namespace GangSungu.Lexer.Low;
 
 using System;
 using Char32 = System.UInt32;
