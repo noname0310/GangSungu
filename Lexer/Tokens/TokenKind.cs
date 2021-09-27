@@ -5,20 +5,20 @@ namespace Lexer.Tokens;
 public readonly record struct TokenKind
 {
     public readonly TokenKindEnum Enum { get; private init; }
-    private readonly Symbol _symbol { get; init; }
-    private readonly TokenLiteral _tokenLiteral { get; init; }
+    private readonly Symbol Symbol { get; init; }
+    private readonly TokenLiteral TokenLiteral { get; init; }
 
     public Symbol ToId()
     {
         if (Enum != TokenKindEnum.Id)
             throw new InvalidOperationException();
-        return _symbol;
+        return Symbol;
     }
     public TokenLiteral ToLiteral()
     {
         if (Enum != TokenKindEnum.Literal)
             throw new InvalidOperationException();
-        return _tokenLiteral;
+        return TokenLiteral;
     }
     public override string ToString() => Enum switch
     {
@@ -116,9 +116,9 @@ public readonly record struct TokenKind
     public static TokenKind LogAnd() => new() { Enum = TokenKindEnum.LogAnd };
     public static TokenKind BitNot() => new() { Enum = TokenKindEnum.BitNot };
     public static TokenKind LogNot() => new() { Enum = TokenKindEnum.LogNot };
-    public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, _symbol = symbol };
-    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, _symbol = new Symbol(id) };
-    public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, _tokenLiteral = tokenLiteral };
+    public static TokenKind Id(Symbol symbol) => new() { Enum = TokenKindEnum.Id, Symbol = symbol };
+    public static TokenKind Id(string id) => new() { Enum = TokenKindEnum.Id, Symbol = new Symbol(id) };
+    public static TokenKind Literal(in TokenLiteral tokenLiteral) => new() { Enum = TokenKindEnum.Literal, TokenLiteral = tokenLiteral };
 }
 
 public enum TokenKindEnum : short
