@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "UnitTest\UnitTest.csproj", "{215139A9-BD45-405E-BB22-B5D31E8A6D73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "Test\UnitTest\UnitTest.csproj", "{215139A9-BD45-405E-BB22-B5D31E8A6D73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GangSungu.Lexer", "Lexer\GangSungu.Lexer.csproj", "{86D54796-6304-4FE3-A71B-5AD8D7943CF3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "Test\ConsoleApp\ConsoleApp.csproj", "{9471D923-B4F6-4B87-8CBC-C4B49C7B8172}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GangSungu.Diagnostic", "Diagnostic\GangSungu.Diagnostic.csproj", "{2BE3AE1E-D6F9-4B1F-AC20-162D71B9DA6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GangSungu.Span", "Span\GangSungu.Span.csproj", "{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GangSungu.Span", "Span\GangSungu.Span.csproj", "{C50B17C0-828F-4F9C-9946-CE67BB52C6CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B5BF738D-BE38-4D7A-AF1A-9F1D597858EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{215139A9-BD45-405E-BB22-B5D31E8A6D73} = {B5BF738D-BE38-4D7A-AF1A-9F1D597858EF}
+		{9471D923-B4F6-4B87-8CBC-C4B49C7B8172} = {B5BF738D-BE38-4D7A-AF1A-9F1D597858EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {24730833-87E9-4118-83E3-C98321E1C5A7}
