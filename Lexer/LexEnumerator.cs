@@ -1,4 +1,5 @@
 ﻿using GangSungu.Lexer.Tokens;
+using GangSungu.Lexer.Low;
 using System;
 using LowLexEnumerator = GangSungu.Lexer.Low.LexEnumerator;
 using LowToken = GangSungu.Lexer.Low.Tokens.Token;
@@ -14,6 +15,7 @@ namespace GangSungu.Lexer;
 
 using GangSungu.Span;
 using GangSungu.Diagnostic;
+using Char32 = UInt32;
 
 public ref struct LexEnumerator
 {
@@ -105,7 +107,6 @@ public ref struct LexEnumerator
         Current = token;
         return true;
     }
-
     public void Reset()
     {
         _ungluedTokenEnumerator.Reset();
@@ -121,7 +122,6 @@ public ref struct LexEnumerator
 
         Current = default;
     }
-
     // TODO: Add diagnostics for error reporting.
     private static Token? Convert(LowToken lowToken, Pos low, in Source source)
     {
@@ -210,7 +210,6 @@ public ref struct LexEnumerator
             return null;
         return new Token(tokenKind.Value, span);
     }
-
     public static void CheckLowToken(in LowToken lowToken, Span span, in Source source)
     {
         switch (lowToken.Kind.Enum)
@@ -218,7 +217,7 @@ public ref struct LexEnumerator
             case LowTokenKindEnum.Unknown:
                 new Diagnostic(
                     Level.Error, $"unknown token '{source.Slice(span).ToUtf16String()}'",
-                    new MultiSpan(new(){ new("'{}' is not allowed", span) }))
+                    new MultiSpan(new() { new("'{}' is not allowed", span) }))
                     .Register();
                 break;
             case LowTokenKindEnum.Whitespace: break;
@@ -256,150 +255,134 @@ public ref struct LexEnumerator
                             var number = literal.ToNumber();
                             if (number.SuffixStart != lowToken.Length)
                             {
-                                //var suffix = source.Slice(span)[number.SuffixStart..];
+                                var suffix = source.Slice(span)[number.SuffixStart..];
 
-                                //// TODO: Perform value overflow check.
+                                // TODO: Perform value overflow check.
 
-                                //match number.kind() {
-                                //    LowTokenNumberLiteralKind::Integer (integer) => match suffix {
-                                //        suffix if is_integer_suffix (suffix) => { }
-                                //        suffix if is_float_suffix (suffix) =>
-                                //        {
-                                //            if !integer.is_decimal() {
-                                //                Diagnostic::push_new(Diagnostic::new(
-                                //                    Level::Error,
-                                //                    format!("invalid use of float suffix '{}'", suffix),
-                                //                    MultiSpan::with_spans(vec![
-                                //                        (
-                                //                            format!("float suffix '{}' is not allowed for non-decimal integer literals", suffix),
-                                //                            Some(Span::new(
-                                //                                span.low().offset(number.suffix_start() as _),
-                                //                                span.high(),
-                                //                            )),
-                                //                        ),
-                                //                        (format!("consider use integer suffix or remove it"), None),
-                                //                    ]),
-                                //                ));
-                                //            }
-                                //        }
-                                //        suffix =>
-                                //        {
-                                //            Diagnostic::push_new(Diagnostic::new(
-                                //                Level::Error,
-                                //                format!("invalid suffix '{}'", suffix),
-                                //                MultiSpan::with_spans(vec![
-                                //                    (
-                                //                        format!("'{}' is not valid suffix", suffix),
-                                //                        Some(Span::new(
-                                //                            span.low().offset(number.suffix_start() as _),
-                                //                            span.high(),
-                                //                        )),
-                                //                    ),
-                                //                    (format!("consider use integer suffix or remove it"), None),
-                                //                ]),
-                                //            ));
-                                //        }
-                                //     },
-                                //    LowTokenNumberLiteralKind::Float => match suffix {
-                                //        suffix if is_float_suffix (suffix) => { }
-                                //        suffix if is_integer_suffix (suffix) =>
-                                //        {
-                                //            Diagnostic::push_new(Diagnostic::new(
-                                //                Level::Error,
-                                //                format!("invalid use of integer suffix '{}'", suffix),
-                                //                MultiSpan::with_spans(vec![
-                                //                    (
-                                //                        format!("integer suffix '{}' is not allowed for float literals", suffix),
-                                //                        Some(Span::new(
-                                //                            span.low().offset(number.suffix_start() as _),
-                                //                            span.high(),
-                                //                        )),
-                                //                    ),
-                                //                    (format!("consider use 'f64' or remove it"), None),
-                                //                ]),
-                                //            ));
-                                //        }
-                                //        suffix =>
-                                //        {
-                                //            Diagnostic::push_new(Diagnostic::new(
-                                //                Level::Error,
-                                //                format!("invalid suffix '{}'", suffix),
-                                //                MultiSpan::with_spans(vec![
-                                //                    (
-                                //                        format!("'{}' is not valid suffix", suffix),
-                                //                        Some(Span::new(
-                                //                            span.low().offset(number.suffix_start() as _),
-                                //                            span.high(),
-                                //                        )),
-                                //                    ),
-                                //                    (format!("consider use 'f64' or remove it"), None),
-                                //                ]),
-                                //            ));
-                                //        }
-                                //    },
-                                //}
+                                switch (number.Kind.Enum)
+                                {
+                                    case LowTokenNumberLiteralKindEnum.Integer:
+                                        {
+                                            var integer = number.Kind.ToInteger();
+                                            if (IsIntegerSuffix(suffix))
+                                                break;
+                                            else if (IsFloatSuffix(suffix))
+                                            {
+                                                if (integer != LowTokenIntegerLiteralKind.Decimal)
+                                                {
+                                                    new Diagnostic(
+                                                        Level.Error,
+                                                        $"invalid use of float suffix '{suffix.ToUtf16String()}'",
+                                                        new MultiSpan(new()
+                                                        {
+                                                            new(
+                                                                $"float suffix '{suffix.ToUtf16String()}' is not allowed for non-decimal integer literals",
+                                                                new(span.Low.Offset(number.SuffixStart), span.High)),
+                                                            new("consider use integer suffix or remove it", null)
+                                                        })).Register();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                new Diagnostic(
+                                                    Level.Error,
+                                                    $"invalid suffix '{suffix.ToUtf16String()}'",
+                                                    new MultiSpan(new()
+                                                    {
+                                                        new(
+                                                            $"'{suffix.ToUtf16String()}' is not valid suffix",
+                                                            new(span.Low.Offset(number.SuffixStart), span.High)),
+                                                        new("consider use integer suffix or remove it", null)
+                                                    })).Register();
+                                            }
+                                        }
+                                        break;
+                                    case LowTokenNumberLiteralKindEnum.Float:
+                                        {
+                                            if (IsFloatSuffix(suffix))
+                                                break;
+                                            else if (IsIntegerSuffix(suffix))
+                                            {
+                                                new Diagnostic(
+                                                    Level.Error,
+                                                    $"invalid use of integer suffix '{suffix.ToUtf16String()}'",
+                                                    new MultiSpan(new()
+                                                    {
+                                                        new(
+                                                            $"integer suffix '{suffix.ToUtf16String()}' is not allowed for float literals",
+                                                            new(span.Low.Offset(number.SuffixStart), span.High)),
+                                                        new("consider use 'f64' or remove it", null)
+                                                    })).Register();
+                                            }
+                                            else
+                                            {
+                                                new Diagnostic(
+                                                    Level.Error,
+                                                    $"invalid suffix '{suffix.ToUtf16String()}'",
+                                                    new MultiSpan(new()
+                                                    {
+                                                        new(
+                                                            $"'{suffix.ToUtf16String()}' is not valid suffix",
+                                                            new(span.Low.Offset(number.SuffixStart), span.High)),
+                                                        new("consider use 'f64' suffix or remove it", null)
+                                                    })).Register();
+                                            }
+                                        }
+                                        break;
+                                }
                             }
                         }
                         break;
                     case LowTokenLiteralKindEnum.SingleQuotedStr:
                         {
                             var str = literal.ToSingleQuotedStr();
-                            // TODO: Detect long-length literals and emit diagnostics for it.
                             if (!str.Terminated)
                             {
-                                Diagnostic::push_new(Diagnostic::new(
-                                    Level::Error,
-                                    format!("single quoted literal is not closed"),
-                                    MultiSpan::with_spans(vec![
-                                        (format!("' is missing"), Some(span)),
-                                        (format!("add ' at the end of the literal"), None),
-
-
-
-                                    ]),
-
-
-
-                                ));
+                                new Diagnostic(
+                                    Level.Error,
+                                    "single quoted literal is not closed",
+                                    new MultiSpan(new()
+                                    {
+                                        new("' is missing", span),
+                                        new("add ' at the end of the literal", null)
+                                    })).Register();
                             }
                         }
                         break;
                     case LowTokenLiteralKindEnum.DoubleQuotedStr:
-                        var str = literal.ToDoubleQuotedStr();
-                        if !str.terminated() {
-                            Diagnostic::push_new(Diagnostic::new(
-                                Level::Error,
-                                format!("double quoted literal is not closed"),
-                                MultiSpan::with_spans(vec![
-                                    (format!("\" is missing"), Some(span)),
-                                    (format!("add \" at the end of the literal"), None),
-
-
-                                ]),
-
-
-                            ));
+                        {
+                            var str = literal.ToDoubleQuotedStr();
+                            if (!str.Terminated)
+                            {
+                                new Diagnostic(
+                                    Level.Error,
+                                    "double quoted literal is not closed",
+                                    new MultiSpan(new()
+                                    {
+                                        new("\" is missing", span),
+                                        new("add \" at the end of the literal", null)
+                                    })).Register();
+                            }
                         }
                         break;
                 }
                 break;
         }
     }
-
-    private static bool IsIntegerSuffix(ReadOnlySpan<char> suffix)
+    private static bool IsIntegerSuffix(ReadOnlySpan<Char32> suffix)
     {
-        if (suffix == "byte"
-            || suffix == "char"
-            || suffix == "i64"
-            || suffix == "u64"
-            || suffix == "usize")
+        if (suffix.Compare("byte")
+            || suffix.Compare("char")
+            || suffix.Compare("i64")
+            || suffix.Compare("u64")
+            || suffix.Compare("usize"))
             return true;
         return false;
     }
 
-    private static bool IsFloatSuffix(ReadOnlySpan<char> suffix)
+    private static bool IsFloatSuffix(ReadOnlySpan<Char32> suffix)
     {
-        if (suffix == "f64")
+        if (suffix.Compare("f64"))
             return true;
         return false;
     }
